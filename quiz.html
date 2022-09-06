@@ -14,7 +14,6 @@
     <link href="styles.css" rel="stylesheet">
     <link href="quiz_style.css" rel="stylesheet">
     <title>Trivia!</title>
-    <script src="quiz.js"> </script>
 
 </head>
 
@@ -55,20 +54,17 @@
         <div class="section">
             <h2>Part 1: Multiple Choice </h2>
             <hr>
-            <h3 id="question1"> Which champion? </h3>
-            <button id="button1" onclick="buttonLogic()"> Jhin </button>
-            <button id="button2" onclick="buttonLogic()"></button>
-            <button id="button3" onclick="buttonLogic()"></button>
+            <h3 id="question1"></h3>
+            <button id="button1" onclick="buttonLogic(this)"></button>
+            <button id="button2" onclick="buttonLogic(this)"></button>
+            <button id="button3" onclick="buttonLogic(this)"></button>
             <button id="refresh" onclick="refreshButtons()" hidden="true"> Refresh </button>
             <h4 id="ansMC" hidden="true"></h4>
         </div>
     </div>
 </body>
 
-<script>
-
-   
-</script>
+<script src="quiz.js"> </script>
 
 </html>
 
