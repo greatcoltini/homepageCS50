@@ -11,43 +11,50 @@ const roles = {
     "support": ["Sona", "Blitzcrank", "Thresh"]
 };
 
+const buttonsArr = [];
+
 // Create function to generate a template for a MC button selection
 
 const targetNode = document.getElementById('mc_container');
 
 function generate_mc() {
-    for (let i = 0; i < roles[top].length; i++){
+    for (let i = 0; i < 3; i++){
          multipleChoiceTemplate(i);
     };
 };
 
+// generate multiple choice section
 function multipleChoiceTemplate(counter) {
 
-    let q1_con = document.createElement("container");
-    let q1_sec = document.createElement("section");
-    let q1_header = document.createElement("h2");
-    let q1_hr = document.createElement('hr');
-    q1_header.innerHTML = "QUESTION " + (counter + 1);
-    let q1_h3 = document.createElement("h3");
-    q1_h3.innerHTML = questionArr[counter];
-    let q1_h4 = document.createElement("h4");
+    let q_con = document.createElement("container");
+    let q_sec = document.createElement("section");
+    let q_header = document.createElement("h2");
+    let q_hr = document.createElement('hr');
+    q_header.innerHTML = "QUESTION " + (counter + 1);
+    let q_h3 = document.createElement("h3");
+    q_h3.innerHTML = questionArr[counter];
+    q_h3.classList.add("q" + counter);
+    let q_h4 = document.createElement("h4");
 
-    targetNode.append(q1_con);
-    q1_con.append(q1_sec);
-    q1_con.classList.add("container");
-    q1_sec.append(q1_header);
-    q1_sec.classList.add("section");
-    q1_header.classList.add("h2");
-    q1_sec.append(q1_hr);
-    q1_sec.append(q1_h3);
+    targetNode.append(q_con);
+    q_con.append(q_sec);
+    q_con.classList.add("container");
+    q_sec.append(q_header);
+    q_sec.classList.add("section");
+    q_header.classList.add("h2");
+    q_sec.append(q_hr);
+    q_sec.append(q_h3);
 
     Object.keys(roles).forEach((tName) =>
     {
-        let opt_1 = document.createElement("button");
-        opt_1.classList.add("button");
-        opt_1.innerHTML = roles[tName][counter];
-        opt_1.setAttribute('name', roles[tName][counter]);
-        q1_sec.append(opt_1);
+        let opt = document.createElement("button");
+        opt.classList.add("button");
+        opt.classList.add("btngrp" + counter);
+        opt.innerHTML = roles[tName][counter];
+        opt.setAttribute('name', roles[tName][counter]);
+        opt.onclick = function() {buttonLogic(self, counter)};
+        opt.append(buttonsArr);
+        q_sec.append(opt);
     });
 }
 
@@ -77,11 +84,32 @@ function shuffle(array) {
   return array;
 }
 
+// Logic for MC buttons
+function buttonLogic(target, id) {
+
+    var buttons = document.getElementsByClassName("btngrp" + id);
+    for (let i = 0; i < buttons.length; i++){
+         buttons[i].disabled = true;
+    };
+
+    const regex = new RegExp('jungler');
+
+    var qTitle = document.getElementByClassName("q" + id);
+    alert(qTitle.innerHTML);
+
+    if (regex.test(qTitle.innerHTML)) {
+        if (roles.jungle.includes(target.innerHTML)){
+            target.disabled = false;
+        }
+    }
+
+
+    document.getElementById("refresh").hidden = false;
+    ansREPLY.hidden = false;
+}
+
 window.addEventListener('load', (event) => {
-  alert(roles.top);
-  multipleChoiceTemplate(0);
-  multipleChoiceTemplate(1);
-  multipleChoiceTemplate(2);
+  generate_mc();
 });
 
 
