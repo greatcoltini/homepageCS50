@@ -5,11 +5,13 @@ const questionArr = ["Which champion is primarily a top laner?", "Which champion
 
 const roles = {
     "top": ["Tryndamere", "Akali", "Aatrox"],
-    "jungle": ["Kayn", "Nunu & Willump", "Elise"],
+    "jungle": ["Kayn", "Nunu and Willump", "Elise"],
     "mid": ["Ryze", "Zed", "Azir"],
     "adc": ["Jhin", "Draven", "Miss Fortune"],
     "support": ["Sona", "Blitzcrank", "Thresh"]
 };
+
+const regex_array = ["top", "jungle", "mid", "bot", "support"];
 
 const buttonsArr = [];
 
@@ -18,7 +20,7 @@ const buttonsArr = [];
 const targetNode = document.getElementById('mc_container');
 
 function generate_mc() {
-    for (let i = 0; i < 3; i++){
+    for (let i = 0; i < roles.top.length; i++){
          multipleChoiceTemplate(i);
     };
 };
@@ -52,7 +54,7 @@ function multipleChoiceTemplate(counter) {
         opt.classList.add("btngrp" + counter);
         opt.innerHTML = roles[tName][counter];
         opt.setAttribute('name', roles[tName][counter]);
-        opt.onclick = function() {buttonLogic(self, counter)};
+        opt.onclick = function() {buttonLogic(opt, counter)};
         opt.append(buttonsArr);
         q_sec.append(opt);
     });
@@ -92,17 +94,19 @@ function buttonLogic(target, id) {
          buttons[i].disabled = true;
     };
 
-    const regex = new RegExp('jungler');
+    var qTitle = document.getElementsByClassName("q" + id);
+    alert(qTitle[0].innerHTML);
 
-    var qTitle = document.getElementByClassName("q" + id);
-    alert(qTitle.innerHTML);
-
-    if (regex.test(qTitle.innerHTML)) {
-        if (roles.jungle.includes(target.innerHTML)){
-            target.disabled = false;
+    for (const regex of regex_array) {
+        const reg = new RegExp(regex);
+        if (reg.test(qTitle[0].innerHTML) == true) {
+            alert(roles[regex]);
+            if (roles[regex].includes(target.innerHTML)){
+                target.disabled = false;
+                target.style.background = "green";
+            }
         }
     }
-
 
     document.getElementById("refresh").hidden = false;
     ansREPLY.hidden = false;
