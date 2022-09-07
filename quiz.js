@@ -1,10 +1,11 @@
 // Initialization of global variables
-const questionArr = ["Which champion is primarily a top laner?", "Which champion is primarily a mid laner?", "Which champion is primarily an ADC?"];
+const questionArr = ["Which champion is primarily a top laner?", "Which champion is primarily a mid laner?", "Which champion is primarily a bot laner?", "Which champion is primarily a support?"];
 // options is as follows: correct, option 2, option 3
-const options = [["Tryndamere", "Zed", "Jhin"], ["Akali", "Ashe", "Kayn"], ["Sejuani", "Alistar", "Braum"]];
+const options = [["Tryndamere", "Zed", "Jhin", "Sona"], ["Akali", "Ashe", "Kayn", "Kayn"], ["Sejuani", "Alistar", "Braum", "Poppy"]];
 const buttonsArr = ["button1", "button2", "button3"];
 var points = 0;
 var prevQuestionArr = [];
+var allQuestions = [0, 1, 2, 3];
 const startUp = true;
 
 // Function returns a random integer between min and max inclusive
@@ -33,7 +34,7 @@ function shuffle(array) {
 
 
 // Picks which question number we are on.
-var questionNumber = getRndInteger(0, 2);
+var questionNumber = getRndInteger(0, 3);
 prevQuestionArr.push(questionNumber);
 
 
@@ -41,12 +42,13 @@ prevQuestionArr.push(questionNumber);
 function refreshButtons() {
     var ansREPLY = document.getElementById("ansMC");
     var finished = false;
-    questionNumber = getRndInteger(0, 2);
+    questionNumber = getRndInteger(0, 3);
 
     while (prevQuestionArr.includes(questionNumber) == true) {
-        questionNumber = getRndInteger(0, 2);
+        questionNumber = getRndInteger(0, 3);
 
-        if (prevQuestionArr.includes(0) && prevQuestionArr.includes(1) && prevQuestionArr.includes(2)) {
+        if (prevQuestionArr.length == allQuestions.length && prevQuestionArr.every((v, i)=>allQuestions.includes(v)))
+        {
             finished = true;
             break;
         }
@@ -59,8 +61,8 @@ function refreshButtons() {
         ansREPLY.hidden = true;
     }
     else {
-        document.getElementById("refresh").disabled = true;
-        document.getElementById("refresh").innerHTML = "Questionnaire exhausted. Score: " + points + "/3";
+        disable_buttons();
+        document.getElementById("refresh").innerHTML = "Questionnaire exhausted. Score: " + points + "/4";
     }
 }
 
@@ -73,7 +75,13 @@ function resetButton() {
         currButt.disabled = false;
         currButt.innerHTML = options[counter.shift()][questionNumber];
     }
-    
+}
+
+function disable_buttons() {
+    for (const button of buttonsArr) {
+        document.getElementById(button).disabled = true;
+    }
+    document.getElementById("refresh").disabled = true;
 }
 
 // Logic for MC buttons
@@ -90,9 +98,8 @@ function buttonLogic(target) {
         ansREPLY.innerText = "Incorrect!";
     }
 
-    
     for (const button of buttonsArr) {
-        button.disabled = true;
+        document.getElementById(button).disabled = true;
     }
 
     document.getElementById("refresh").hidden = false;
