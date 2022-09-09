@@ -7,7 +7,7 @@ const roles = {
     "top": ["Tryndamere", "Akali", "Aatrox"],
     "jungle": ["Kayn", "Nunu and Willump", "Elise"],
     "mid": ["Ryze", "Zed", "Azir"],
-    "adc": ["Jhin", "Draven", "Miss Fortune"],
+    "bot": ["Jhin", "Draven", "Miss Fortune"],
     "support": ["Sona", "Blitzcrank", "Thresh"]
 };
 
@@ -19,6 +19,8 @@ const buttonsArr = [];
 
 const targetNode = document.getElementById('mc_container');
 
+var score = 0;
+
 function generate_mc() {
     for (let i = 0; i < roles.top.length; i++){
          multipleChoiceTemplate(i);
@@ -28,13 +30,16 @@ function generate_mc() {
 // generate multiple choice section
 function multipleChoiceTemplate(counter) {
 
+    let container_buttons = [];
+    let question_pick = getRndInteger(0, 4);
+
     let q_con = document.createElement("container");
     let q_sec = document.createElement("section");
     let q_header = document.createElement("h2");
     let q_hr = document.createElement('hr');
     q_header.innerHTML = "QUESTION " + (counter + 1);
     let q_h3 = document.createElement("h3");
-    q_h3.innerHTML = questionArr[counter];
+    q_h3.innerHTML = questionArr[question_pick];
     q_h3.classList.add("q" + counter);
     let q_h4 = document.createElement("h4");
 
@@ -46,6 +51,7 @@ function multipleChoiceTemplate(counter) {
     q_header.classList.add("h2");
     q_sec.append(q_hr);
     q_sec.append(q_h3);
+    q_sec.append(q_h4);
 
     Object.keys(roles).forEach((tName) =>
     {
@@ -55,9 +61,14 @@ function multipleChoiceTemplate(counter) {
         opt.innerHTML = roles[tName][counter];
         opt.setAttribute('name', roles[tName][counter]);
         opt.onclick = function() {buttonLogic(opt, counter)};
-        opt.append(buttonsArr);
-        q_sec.append(opt);
-    });
+        container_buttons.push(opt);
+    })
+
+    shuffle(container_buttons);
+
+    for (const button of container_buttons){
+        q_sec.append(button);
+    }
 }
 
 
@@ -89,28 +100,27 @@ function shuffle(array) {
 // Logic for MC buttons
 function buttonLogic(target, id) {
 
-    var buttons = document.getElementsByClassName("btngrp" + id);
-    for (let i = 0; i < buttons.length; i++){
-         buttons[i].disabled = true;
-    };
-
     var qTitle = document.getElementsByClassName("q" + id);
-    alert(qTitle[0].innerHTML);
+    var buttons = document.getElementsByClassName("btngrp" + id);
+
+    target.style.background = "red";
 
     for (const regex of regex_array) {
         const reg = new RegExp(regex);
         if (reg.test(qTitle[0].innerHTML) == true) {
-            alert(roles[regex]);
             if (roles[regex].includes(target.innerHTML)){
-                target.disabled = false;
+                target.disabled = true;
                 target.style.background = "green";
+                score = score + 1;
             }
         }
-    }
+    };
 
-    document.getElementById("refresh").hidden = false;
-    ansREPLY.hidden = false;
-}
+    for (let i = 0; i <= buttons.length; i++){
+        buttons[i].disabled = true;
+    };
+
+};
 
 window.addEventListener('load', (event) => {
   generate_mc();
