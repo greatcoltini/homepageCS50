@@ -4,25 +4,28 @@ const questionArr = ["Which champion is primarily a top laner?", "Which champion
                     "Which champion is primarily a support?"];
 
 const roles = {
-    "top": ["Tryndamere", "Akali", "Aatrox"],
-    "jungle": ["Kayn", "Nunu and Willump", "Elise"],
-    "mid": ["Ryze", "Zed", "Azir"],
-    "bot": ["Jhin", "Draven", "Miss Fortune"],
-    "support": ["Sona", "Blitzcrank", "Thresh"]
+    "top": ["Tryndamere", "Akali", "Aatrox", "Cho'Gath", "Darius", "Fiora", "Gangplank", "Garen", "Illaoi", "Kled"],
+    "jungle": ["Kayn", "Nunu and Willump", "Elise", "Amumu", "Evelynn", "Gragas", "Graves", "Karthus", "Kindred", "Nidalee"],
+    "mid": ["Ryze", "Zed", "Azir", "Galio", "Cassiopeia", "Katarina", "Kassadin", "Qiyana", "Orianna", "Syndra"],
+    "bot": ["Jhin", "Draven", "Miss Fortune", "Ezreal", "Samira", "Sivir", "Ashe", "Kaisa", "Vayne", "Kog'Maw"],
+    "support": ["Sona", "Blitzcrank", "Thresh", "Pyke", "Zilean", "Yuumi", "Nami", "Janna", "Braum", "Leona"]
 };
 
 const regex_array = ["top", "jungle", "mid", "bot", "support"];
-
-const buttonsArr = [];
 
 // Create function to generate a template for a MC button selection
 
 const targetNode = document.getElementById('mc_container');
 
 var score = 0;
+var total;
 
 function generate_mc() {
-    for (let i = 0; i < roles.top.length; i++){
+    total = roles.top.length;
+    for (const [key, value] of Object.entries(roles)){
+        shuffle(value);
+    }
+    for (let i = 0; i < total; i++){
          multipleChoiceTemplate(i);
     };
 };
@@ -116,11 +119,45 @@ function buttonLogic(target, id) {
         }
     };
 
+
     for (let i = 0; i <= buttons.length; i++){
         buttons[i].disabled = true;
-    };
+        results();
+    }
+
 
 };
+
+// results function
+function results() {
+    var all_disabled = true;
+    var list = []
+    $('[class]').each(function() {
+      this.classList.forEach(function(className) {
+        if (!className.indexOf('btngrp') && !list.includes(className)) {
+          list.push(className)
+        }
+      })
+    })
+
+    for (const item of list){
+        var elements = document.getElementsByClassName(item);
+
+        for (const element of elements) {
+            if (element.disabled != true)
+            {
+                all_disabled = false;
+            }
+        }
+    }
+
+    if (all_disabled == true){
+        document.getElementById("answer_cont").hidden = false;
+        document.getElementById("answers").innerHTML = score + "/10";
+        document.getElementById("answers").hidden = false;
+    }
+}
+
 
 window.addEventListener('load', (event) => {
   generate_mc();

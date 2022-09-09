@@ -13,6 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
     <link href="styles.css" rel="stylesheet">
     <link href="quiz_style.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <title>Trivia!</title>
 
 </head>
@@ -63,6 +64,16 @@
 <!--                <h4 id="ansMC" hidden></h4>-->
 <!--            </div>-->
 <!--        </div>-->
+    </div>
+    <div class="container">
+        <div id="answer_cont" class="container" hidden>
+            <div class="section">
+                <h2> RESULTS </h2>
+                <hr>
+                <button id="refresh" onclick="refreshButtons()" hidden> Refresh </button>
+                <h4 id="answers" hidden></h4>
+            </div>
+        </div>
     </div>
 </body>
 
