@@ -1,4 +1,6 @@
-const url ="https://na1.api.riotgames.com/lol/league-exp/v4/entries/RANKED_SOLO_5x5/CHALLENGER/I?page=1&api_key=RGAPI-3248f57f-c8c6-49f7-b2a4-62639a99cd63"
+const apikey = "RGAPI-f80c3039-2df8-466f-b847-ebab69ee76f8";
+
+const url ="https://na1.api.riotgames.com/lol/league-exp/v4/entries/RANKED_SOLO_5x5/CHALLENGER/I?page=1&api_key="+apikey;
 
 
 const chalrows = document.getElementById('chalrows');
@@ -21,20 +23,18 @@ function pullSummoner(rank, header, lp_display) {
 // pull summoner id from api, then pull top 5 champion ids and place them into our summoners obj
 function getSummonerTopChamps(summoner){
     var summonerID;
-    var summonerData = fetch("https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/"+summoner+"?api_key=RGAPI-3248f57f-c8c6-49f7-b2a4-62639a99cd63")
+    var summonerData = fetch("https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/"+summoner+"?api_key="+apikey)
         .then(summoner=>{return summoner.json()})
-        .then(res=>{
-            summonerID = res.id;})
+        .then(result=>{
+            summonerID = result.id;
+            var champData = fetch("https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/"+summonerID+"/top?count=5&api_key="+apikey)
+                .then(champData=>{return champData.json()})
+                .then(champion_info=>{
+                    summoners[summoner] = champion_info[0].championId;
+                })
+                .catch(error=>console.log(error))
+            })
         .catch(error=>console.log(error))
-    var champData = fetch("https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/"+summonerID+"/top?count=5&api_key=RGAPI-3248f57f-c8c6-49f7-b2a4-62639a99cd63")
-        .then(champData=>{return champData.json()})
-        .then(res=>{
-            for (const champ of res){
-                summoners.summoner.append(champ);
-            }
-        })
-        .catch(error=>console.log(error))
-    alert(summoners.summoner);
 }
 
 // generate challenger lists
@@ -105,11 +105,10 @@ window.addEventListener('load', (event) => {
     for (let i = 0; i < 10; i ++){
         generateSummonerCSS(i);
     }
-
     for (let j = 0; j < 10; j ++)
     {
         getSummonerTopChamps(summonerNames[j]);
     }
 
-});
+})
 
