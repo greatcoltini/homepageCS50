@@ -5,7 +5,17 @@ const url ="https://na1.api.riotgames.com/lol/league-exp/v4/entries/RANKED_SOLO_
 
 const chalrows = document.getElementById('chalrows');
 
-const summonerNames = [];
+var summonerNames = [];
+
+// define structure for a summoner object
+function summoner(player_name)
+{
+    this.name = player_name;
+    this.rank = 0;
+    this.top5 = [];
+    this.lp = 0;
+}
+
 
 var summoners = {};
 
@@ -30,7 +40,9 @@ function getSummonerTopChamps(summoner){
             var champData = fetch("https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/"+summonerID+"/top?count=5&api_key="+apikey)
                 .then(champData=>{return champData.json()})
                 .then(champion_info=>{
+                    alert(summonerID);
                     summoners[summoner] = champion_info[0].championId;
+                    alert(summoners[summoner]);
                 })
                 .catch(error=>console.log(error))
             })
