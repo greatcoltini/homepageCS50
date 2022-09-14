@@ -66,7 +66,7 @@ async function readChampionsJson() {
         .then(cres=>{
             var champdata = cres.data;
             for (let i = 0; i < 161; i++){
-                champions.push([champdata[Object.keys(champdata)[i]].name, champdata[Object.keys(champdata)[i]].key]);
+                champions.push([champdata[Object.keys(champdata)[i]].id, champdata[Object.keys(champdata)[i]].key]);
             }
 
             // parse through top 5, replace id with name
@@ -88,13 +88,6 @@ async function readChampionsJson() {
 function populateSection(id, title, lp_display, top5){
     title.innerHTML = summoners[id].name;
     lp_display.innerHTML = summoners[id].lp;
-    for (i = 0; i < 5; i++){
-        var ico = new Image();
-        ico.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+summoners[id].top5[i]+".png";
-        ico.classList.add("brand");
-        top5.appendChild(ico);
-    }
-    top5.innerHTML = summoners[id].top5;
 }
 
 // generate challenger lists
@@ -106,7 +99,7 @@ function generateSummonerCSS(counter) {
     let div_row = document.createElement("div");
     div_row.classList.add("row", "g-0", "border", "rounded",
                         "overflow-hidden", "flex-md-row", "mb-4", "shadow-sm",
-                         "h-md-300", "position-relative");
+                         "h-md-600", "position-relative");
 
     let div_col_inner = document.createElement("div");
     div_col_inner.classList.add("col", "p-4", "d-flex", "flex-column", "position-static");
@@ -140,8 +133,14 @@ function generateSummonerCSS(counter) {
 
     let chal_top5 = document.createElement("div");
 
+    for (i = 0; i < 5; i++){
+        var img = document.createElement("img");
+        img.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+summoners[counter].top5[i]+".png";
+        chal_top5.appendChild(img);
+    }
+
     // runs function to pull data from api
-    populateSection(counter, chal_name, chal_points, chal_top5);
+    populateSection(counter, chal_name, chal_points);
 
 
     let q_h4 = document.createElement("h4");
@@ -155,9 +154,8 @@ function generateSummonerCSS(counter) {
     chal_headers_row.append(name_header);
     chal_headers_row.append(points_header);
     div_col_inner.append(q_hr);
-    div_col_inner.append(chal_display_row);
+    div_col_inner.append(chal_display_row, chal_top5);
     chal_display_row.append(chal_name, chal_points);
-    chal_display_row.append(chal_top5);
     div_col_inner.append(z_hr);
     div_col_inner.append(q_h4);
 
@@ -177,15 +175,6 @@ async function startup() {
     }
 
 }
-
-// function to convert list of champion ids to champion names
-//function idToName(summoner){
-//    // takes in a summoner id, converts their top 5 list into champion names
-//    for (let i = 0; i < 5; i++){
-//        //
-//
-//    }
-//}
 
 window.addEventListener('load', (event) => {
     startup();
