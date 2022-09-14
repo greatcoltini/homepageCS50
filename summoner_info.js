@@ -5,7 +5,6 @@ const url ="https://na1.api.riotgames.com/lol/league-exp/v4/entries/RANKED_SOLO_
 // define an array of champion name, id
 var champions = [];
 
-
 // define structure for a summoner object
 function summoner()
 {
@@ -67,12 +66,20 @@ async function readChampionsJson() {
         .then(cres=>{
             var champdata = cres.data;
             for (let i = 0; i < 161; i++){
-                alert(champdata[Object.keys(champdata)[i]].name);
-                champions.push([champdata[Object.keys(champdata)[i]].name])
+                champions.push([champdata[Object.keys(champdata)[i]].name, champdata[Object.keys(champdata)[i]].key]);
             }
-            // add each champion and id to list, then sort list
 
             // parse through top 5, replace id with name
+            for (let i = 0; i < summoners.length; i++){
+                for (let j = 0; j < 5; j ++){
+                    for (let k = 0; k < champions.length; k++)
+                    {
+                        if (summoners[i].top5[j] == champions[k][1]){
+                            summoners[i].top5[j] = champions[k][0];
+                        }
+                    }
+                }
+            }
         })
         .catch(error=>console.log(error))
 }
@@ -81,6 +88,12 @@ async function readChampionsJson() {
 function populateSection(id, title, lp_display, top5){
     title.innerHTML = summoners[id].name;
     lp_display.innerHTML = summoners[id].lp;
+    for (i = 0; i < 5; i++){
+        var ico = new Image();
+        ico.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+summoners[id].top5[i]+".png";
+        ico.classList.add("brand");
+        top5.appendChild(ico);
+    }
     top5.innerHTML = summoners[id].top5;
 }
 
@@ -125,7 +138,7 @@ function generateSummonerCSS(counter) {
     let chal_display_row = document.createElement("container-fluid");
     chal_display_row.classList.add("row");
 
-    let chal_top5 = document.createElement("h3");
+    let chal_top5 = document.createElement("div");
 
     // runs function to pull data from api
     populateSection(counter, chal_name, chal_points, chal_top5);
