@@ -22,8 +22,8 @@ function createListSummoners() {
 
 // define function to pull top 10 ranked challenger players via api, allocate them to list of summoners
 // grabs summoner and rank from challenger list
-function pullSummonerData() {
-    var leagueData = fetch(url)
+async function pullSummonerData() {
+    return fetch(url)
         .then(data=>{return data.json()})
         .then(res=>{
             for (let i = 0; i < 9; i++)
@@ -31,20 +31,45 @@ function pullSummonerData() {
                 summoners[i].name = res[i].summonerName;
                 summoners[i].rank = i + 1;
                 summoners[i].lp = res[i].leaguePoints;
-                var summonerData = fetch("https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/"+summoners[i].name+"?api_key="+apikey)
-                    .then(summdata=>{return summdata.json()})
-                    .then(result=>{
-                        summoners[i].summonerID = result.id;
-                    })
-                    .catch(error=>alert(error))
-            }
-            alert(summoners[0].rank + " " + summoners[0].name);
-            alert(summoners[0].summonerID);})
+            }})
         .catch(error=>console.log(error))
+}
+
+async function pullSummonerID(summoner){
+    return fetch("https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/"+summoner.name+"?api_key="+apikey)
+        .then(summdata=>{return summdata.json()})
+        .then(result=>{
+            summoner.summonerID = result.id;
+        })
+        .catch(error=>console.log(error))
+}
+
+// takes in a summoner object, and adds their top 5 most played champions
+function pullTopChamps(summoner){
+    return fetch("https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/"+summoner.summonerID+"/top?count=5&api_key="+apikey)
+        .then(data=>{return data.json()})
+        .then(res=>{
+            for (let i = 0; i < 5; i++){
+                summoner.top5[i] = res[i].championId;
+            }
+        })
+        .catch(error=>console.log(error))
+}
+
+
+
+async function startup() {
+    createListSummoners();
+    await pullSummonerData();
+    for (let i = 0; i < summoners.length; i++){
+        await pullSummonerID(summoners[i]);
+        await pullTopChamps(summoners[i]);
+    }
+    alert(summoners[0].top5);
+    alert(summoners[0].summonerID);
 
 }
 
 window.addEventListener('load', (event) => {
-    createListSummoners();
-    pullSummonerData();
+    startup();
 })

@@ -1,59 +1,94 @@
-const apikey = "RGAPI-f80c3039-2df8-466f-b847-ebab69ee76f8";
+const apikey = "RGAPI-a6fe8dac-088b-4944-a3fb-4dcf28e0c3bd";
 
 const url ="https://na1.api.riotgames.com/lol/league-exp/v4/entries/RANKED_SOLO_5x5/CHALLENGER/I?page=1&api_key="+apikey;
 
+// define an array of champion name, id
+var champions = [];
 
-const chalrows = document.getElementById('chalrows');
-
-var summonerNames = [];
 
 // define structure for a summoner object
-function summoner(player_name)
+function summoner()
 {
-    this.name = player_name;
+    this.name = "";
+    this.summonerID = "";
     this.rank = 0;
     this.top5 = [];
     this.lp = 0;
 }
 
+var summoners = [];
 
-var summoners = {};
+function createListSummoners() {
+    for (var i = 0; i < 10; i++){
+        summoners[i] = new summoner();
+    }
+}
 
+// define function to pull top 10 ranked challenger players via api, allocate them to list of summoners
 // grabs summoner and rank from challenger list
-function pullSummoner(rank, header, lp_display) {
-    var leagueData = fetch(url)
+async function pullSummonerData() {
+    return fetch(url)
         .then(data=>{return data.json()})
         .then(res=>{
-        summonerNames.push(res[rank].summonerName);
-        header.innerHTML = res[rank].summonerName;
-        lp_display.innerHTML = res[rank].leaguePoints;})
+            for (let i = 0; i < 10; i++)
+            {
+                summoners[i].name = res[i].summonerName;
+                summoners[i].rank = i + 1;
+                summoners[i].lp = res[i].leaguePoints;
+            }})
         .catch(error=>console.log(error))
 }
 
-// pull summoner id from api, then pull top 5 champion ids and place them into our summoners obj
-function getSummonerTopChamps(summoner){
-    var summonerID;
-    var summonerData = fetch("https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/"+summoner+"?api_key="+apikey)
-        .then(summoner=>{return summoner.json()})
+async function pullSummonerID(summoner){
+    return fetch("https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/"+summoner.name+"?api_key="+apikey)
+        .then(summdata=>{return summdata.json()})
         .then(result=>{
-            summonerID = result.id;
-            var champData = fetch("https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/"+summonerID+"/top?count=5&api_key="+apikey)
-                .then(champData=>{return champData.json()})
-                .then(champion_info=>{
-                    alert(summonerID);
-                    summoners[summoner] = champion_info[0].championId;
-                    alert(summoners[summoner]);
-                })
-                .catch(error=>console.log(error))
-            })
+            summoner.summonerID = result.id;
+        })
         .catch(error=>console.log(error))
+}
+
+// takes in a summoner object, and adds their top 5 most played champions
+async function pullTopChamps(summoner){
+    return fetch("https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/"+summoner.summonerID+"/top?count=5&api_key="+apikey)
+        .then(data=>{return data.json()})
+        .then(res=>{
+            for (let i = 0; i < 5; i++){
+                summoner.top5[i] = res[i].championId;
+            }
+        })
+        .catch(error=>console.log(error))
+}
+
+// import champions.json
+async function readChampionsJson() {
+    return fetch("http://ddragon.leagueoflegends.com/cdn/12.17.1/data/en_US/champion.json")
+        .then(data=>{return data.json()})
+        .then(cres=>{
+            var champdata = cres.data;
+            for (let i = 0; i < 161; i++){
+                alert(champdata[Object.keys(champdata)[i]].name);
+                champions.push([champdata[Object.keys(champdata)[i]].name])
+            }
+            // add each champion and id to list, then sort list
+
+            // parse through top 5, replace id with name
+        })
+        .catch(error=>console.log(error))
+}
+
+// populate section with data from summoner object
+function populateSection(id, title, lp_display, top5){
+    title.innerHTML = summoners[id].name;
+    lp_display.innerHTML = summoners[id].lp;
+    top5.innerHTML = summoners[id].top5;
 }
 
 // generate challenger lists
 function generateSummonerCSS(counter) {
 
-    let div_col_outer = document.createElement("div")
-    div_col_outer.classList.add("col-md-6")
+    let div_col_outer = document.createElement("div");
+    div_col_outer.classList.add("col-md-6");
 
     let div_row = document.createElement("div");
     div_row.classList.add("row", "g-0", "border", "rounded",
@@ -71,7 +106,7 @@ function generateSummonerCSS(counter) {
     let z_hr = document.createElement('hr');
 
     let name_header = document.createElement("div");
-    name_header.classList.add("col", "p-4", "d-flex", "flex-column", "position-static");
+    name_header.classList.add("col", "p-4", "d-flex", "flex-column", "position-static", "justify-content-center");
     name_header.innerHTML = "SUMMONER NAME";
 
     let points_header = document.createElement("div");
@@ -90,8 +125,11 @@ function generateSummonerCSS(counter) {
     let chal_display_row = document.createElement("container-fluid");
     chal_display_row.classList.add("row");
 
+    let chal_top5 = document.createElement("h3");
+
     // runs function to pull data from api
-    pullSummoner(counter, chal_name, chal_points);
+    populateSection(counter, chal_name, chal_points, chal_top5);
+
 
     let q_h4 = document.createElement("h4");
 
@@ -106,21 +144,37 @@ function generateSummonerCSS(counter) {
     div_col_inner.append(q_hr);
     div_col_inner.append(chal_display_row);
     chal_display_row.append(chal_name, chal_points);
+    chal_display_row.append(chal_top5);
     div_col_inner.append(z_hr);
     div_col_inner.append(q_h4);
 
 }
 
 
-
-window.addEventListener('load', (event) => {
-    for (let i = 0; i < 10; i ++){
+async function startup() {
+    createListSummoners();
+    await pullSummonerData();
+    for (let i = 0; i < summoners.length; i++){
+        await pullSummonerID(summoners[i]);
+        await pullTopChamps(summoners[i]);
+        // at this point we have list of champion ids;
+        // sort through the champions.json and return each
+        await readChampionsJson();
         generateSummonerCSS(i);
     }
-    for (let j = 0; j < 10; j ++)
-    {
-        getSummonerTopChamps(summonerNames[j]);
-    }
 
+}
+
+// function to convert list of champion ids to champion names
+//function idToName(summoner){
+//    // takes in a summoner id, converts their top 5 list into champion names
+//    for (let i = 0; i < 5; i++){
+//        //
+//
+//    }
+//}
+
+window.addEventListener('load', (event) => {
+    startup();
 })
 
