@@ -1,6 +1,8 @@
 const apikey = "RGAPI-a6fe8dac-088b-4944-a3fb-4dcf28e0c3bd";
 
-const url ="https://na1.api.riotgames.com/lol/league-exp/v4/entries/RANKED_SOLO_5x5/CHALLENGER/I?page=1&api_key="+apikey;
+var region="na1";
+
+var url ="https://"+region+".api.riotgames.com/lol/league-exp/v4/entries/RANKED_SOLO_5x5/CHALLENGER/I?page=1&api_key="+apikey;
 
 // define an array of champion name, id
 var champions = [];
@@ -38,8 +40,9 @@ async function pullSummonerData() {
         .catch(error=>console.log(error))
 }
 
+// Function to pull summoner id from API
 async function pullSummonerID(summoner){
-    return fetch("https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/"+summoner.name+"?api_key="+apikey)
+    return fetch("https://"+region+".api.riotgames.com/lol/summoner/v4/summoners/by-name/"+summoner.name+"?api_key="+apikey)
         .then(summdata=>{return summdata.json()})
         .then(result=>{
             summoner.summonerID = result.id;
@@ -49,7 +52,7 @@ async function pullSummonerID(summoner){
 
 // takes in a summoner object, and adds their top 5 most played champions
 async function pullTopChamps(summoner){
-    return fetch("https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/"+summoner.summonerID+"/top?count=5&api_key="+apikey)
+    return fetch("https://"+region+".api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/"+summoner.summonerID+"/top?count=5&api_key="+apikey)
         .then(data=>{return data.json()})
         .then(res=>{
             for (let i = 0; i < 5; i++){
@@ -93,7 +96,7 @@ function populateSection(id, title, lp_display, top5){
 // generate challenger lists
 function generateSummonerCSS(counter) {
 
-    let div_col_outer = document.createElement("div");
+    let div_col_outer = document.createElement("mc_container");
     div_col_outer.classList.add("col-md-6");
 
     let div_row = document.createElement("div");
@@ -143,7 +146,10 @@ function generateSummonerCSS(counter) {
     populateSection(counter, chal_name, chal_points);
 
 
-    let q_h4 = document.createElement("h4");
+    // header for champions played
+    let champs_header = document.createElement("strong");
+    champs_header.classList.add("d-inline-block", "mb-2", "text-primary");
+    champs_header.innerHTML = "TOP 5 CHAMPIONS";
 
     chalrows.append(div_col_outer);
     div_col_outer.append(div_row);
@@ -154,15 +160,29 @@ function generateSummonerCSS(counter) {
     chal_headers_row.append(name_header);
     chal_headers_row.append(points_header);
     div_col_inner.append(q_hr);
-    div_col_inner.append(chal_display_row, chal_top5);
+    div_col_inner.append(chal_display_row, champs_header, chal_top5);
     chal_display_row.append(chal_name, chal_points);
     div_col_inner.append(z_hr);
-    div_col_inner.append(q_h4);
 
+}
+
+// function to clean window and start new -- region switch
+function removeAllChildNodes(parent) {
+    alert(parent.id);
+    saved_node = parent.firstElementChild;
+    alert(saved_node.id);
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
+    parent.appendChild(saved_node);
+    summoners = [];
+    champions = [];
+    startup();
 }
 
 
 async function startup() {
+    url ="https://"+region+".api.riotgames.com/lol/league-exp/v4/entries/RANKED_SOLO_5x5/CHALLENGER/I?page=1&api_key="+apikey;
     createListSummoners();
     await pullSummonerData();
     for (let i = 0; i < summoners.length; i++){
@@ -173,7 +193,34 @@ async function startup() {
         await readChampionsJson();
         generateSummonerCSS(i);
     }
+}
 
+
+
+/// DROP DOWN BUTTONS JAVASCRIPT
+/* When the user clicks on the button,
+toggle between hiding and showing the dropdown content */
+function switchRegions() {
+  document.getElementById("dropdown").classList.toggle("show");
+}
+
+function changeRegion(target) {
+    region = target.id;
+    removeAllChildNodes(document.getElementById("chalrows"));
+}
+
+// Close the dropdown menu if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
 }
 
 window.addEventListener('load', (event) => {

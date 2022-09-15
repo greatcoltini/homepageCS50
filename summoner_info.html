@@ -48,20 +48,20 @@
 
         <!-- INTRO SECTION -->
         <div  class="row mb-2">
-            <section id="chalrows" class="py-5 text-center container">
-                <div class="row py-lg-5">
+            <section id="chalrows" class="py-5 text-center mc_container">
+                <div id="saved" class="row py-lg-5">
                   <div class="col-lg-6 col-md-8 mx-auto">
                     <h1 class="fw-light">TOP 10 LEAGUE OF LEGENDS PLAYERS - NORTH AMERICA</h1>
-                    <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.</p>
+                    <p class="lead text-muted">A list of the highest ranked league of legends players in the specified region, displaying their most played champions.</p>
                     <p>
                       <div class="col py-lg-5">
                           <a href="https://na.op.gg" target="_blank" class="btn btn-primary my-2">OP.GG</a>
                           <div class="dropdown">
                               <a href="#" class="dropbtn btn btn-secondary my-2 " onclick="switchRegions()">Switch Regions</a>
                                 <div id="dropdown" class="dropdown-content">
-                                    <a href="#"> NORTH AMERICA </a>
-                                    <a href="#"> EU WEST </a>
-                                    <a href="#"> KOREA </a>
+                                    <a onclick="changeRegion(this)" id="na1"> NORTH AMERICA </a>
+                                    <a onclick="changeRegion(this)" id="euw1"> EU WEST </a>
+                                    <a onclick="changeRegion(this)" id="kr"> KOREA </a>
                                 </div>
                           </div>
                       </div>
