@@ -2,16 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Summoner Info</title>
+    <title>Personal Info</title>
+
+    <link href="style.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
-    <link href="style.css" rel="stylesheet">
-    <link href="main_style.css" rel="stylesheet">
-    <link href="dropdown.css" rel="stylesheet">
 </head>
 
 <body class="text-bg-dark">
@@ -54,7 +53,14 @@
                     <h1 class="fw-light">INDIVIDUAL MATCH HISTORY</h1>
                     <p>
                       <div class="col py-lg-5">
-                          <a href="https://na.op.gg" target="_blank" class="btn btn-primary my-2">OP.GG</a>
+                        <a href="https://na.op.gg" target="_blank" class="btn btn-primary my-2">OP.GG</a>
+                        <form>
+                            <div class="form-group">
+                                <label for="formGroupExampleInput">Enter the Summoner Name to search:</label>
+                                <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Example input">
+                                <button id="search" type="submit" class="btn btn-primary">Search Summoner</button>
+                            </div>
+                        </form>
                       </div>
                     </p>
                   </div>
