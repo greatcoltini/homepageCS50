@@ -1,4 +1,4 @@
-const apikey = "RGAPI-3250daad-23b6-43da-b257-91eb421653e0";
+const apikey = "RGAPI-a6fe8dac-088b-4944-a3fb-4dcf28e0c3bd";
 
 var region="na1";
 
@@ -17,25 +17,16 @@ function summoner()
     this.lp = 0;
 }
 
-var summoners = [];
+var player = new summoner();
 
-function createListSummoners() {
-    for (var i = 0; i < 10; i++){
-        summoners[i] = new summoner();
-    }
-}
-
-// define function to pull top 10 ranked challenger players via api, allocate them to list of summoners
 // grabs summoner and rank from challenger list
 async function pullSummonerData() {
     return fetch(url)
         .then(data=>{return data.json()})
         .then(res=>{
-            for (let i = 0; i < 10; i++)
-            {
-                summoners[i].name = res[i].summonerName;
-                summoners[i].rank = i + 1;
-                summoners[i].lp = res[i].leaguePoints;
+            player.name = res.summonerName;
+            player.rank = i + 1;
+            player.lp = res.leaguePoints;
             }})
         .catch(error=>console.log(error))
 }
@@ -77,8 +68,8 @@ async function readChampionsJson() {
                 for (let j = 0; j < 5; j ++){
                     for (let k = 0; k < champions.length; k++)
                     {
-                        if (summoners[i].top5[j] == champions[k][1]){
-                            summoners[i].top5[j] = champions[k][0];
+                        if (player.top5[j] == champions[k][1]){
+                            player.top5[j] = champions[k][0];
                         }
                     }
                 }
@@ -138,7 +129,7 @@ function generateSummonerCSS(counter) {
 
     for (i = 0; i < 5; i++){
         var img = document.createElement("img");
-        img.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+summoners[counter].top5[i]+".png";
+        img.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+player[counter].top5[i]+".png";
         chal_top5.appendChild(img);
     }
 
@@ -168,7 +159,9 @@ function generateSummonerCSS(counter) {
 
 // function to clean window and start new -- region switch
 function removeAllChildNodes(parent) {
+    alert(parent.id);
     saved_node = parent.firstElementChild;
+    alert(saved_node.id);
     while (parent.firstChild) {
         parent.removeChild(parent.firstChild);
     }
@@ -181,16 +174,13 @@ function removeAllChildNodes(parent) {
 
 async function startup() {
     url ="https://"+region+".api.riotgames.com/lol/league-exp/v4/entries/RANKED_SOLO_5x5/CHALLENGER/I?page=1&api_key="+apikey;
-    createListSummoners();
     await pullSummonerData();
-    for (let i = 0; i < summoners.length; i++){
-        await pullSummonerID(summoners[i]);
-        await pullTopChamps(summoners[i]);
-        // at this point we have list of champion ids;
-        // sort through the champions.json and return each
-        await readChampionsJson();
-        generateSummonerCSS(i);
-    }
+    await pullSummonerID(summoners[i]);
+    await pullTopChamps(summoners[i]);
+    // at this point we have list of champion ids;
+    // sort through the champions.json and return each
+    await readChampionsJson();
+    generateSummonerCSS(i);
 }
 
 
@@ -204,21 +194,7 @@ function switchRegions() {
 
 function changeRegion(target) {
     region = target.id;
-    removeAllChildNodes(document.getElementById("chalrows"));
-}
-
-// Close the dropdown menu if the user clicks outside of it
-window.onclick = function(event) {
-  if (!event.target.matches('.dropbtn')) {
-    var dropdowns = document.getElementsByClassName("dropdown-content");
-    var i;
-    for (i = 0; i < dropdowns.length; i++) {
-      var openDropdown = dropdowns[i];
-      if (openDropdown.classList.contains('show')) {
-        openDropdown.classList.remove('show');
-      }
-    }
-  }
+    removeAllChildNodes(document.getElementById("matchhistory"));
 }
 
 window.addEventListener('load', (event) => {
