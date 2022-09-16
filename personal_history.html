@@ -34,7 +34,10 @@
                         <a href="quiz.html" class="btn btn-outline-primary">QUIZ</a>
                     </li>
                     <li class="nav-item">
-                        <a href="summoner_info.html" class="btn btn-primary disabled">RANKINGS</a>
+                        <a href="summoner_info.html" class="btn btn-outline-primary">RANKINGS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="contact.html" class="btn btn-primary disabled">SUMMONER SEARCH</a>
                     </li>
                     <li class="nav-item">
                         <a href="contact.html" class="btn btn-outline-primary">CONTACT</a>
@@ -55,10 +58,10 @@
                       <div class="col py-lg-5">
                         <a href="https://na.op.gg" target="_blank" class="btn btn-primary my-2">OP.GG</a>
                         <form>
-                            <div class="form-group">
-                                <label for="formGroupExampleInput">Enter the Summoner Name to search:</label>
-                                <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Example input">
-                                <button id="search" type="submit" class="btn btn-primary">Search Summoner</button>
+                            <div class="form-group ms-0">
+                                <label>Enter the Summoner Name to search:</label>
+                                <input type="text" class="form-control" id="summoner_name" placeholder="Enter Summoner Name Here">
+                                <button id="search" type="submit" class="btn btn-primary" onclick="searchSummoner()">Search Summoner</button>
                             </div>
                         </form>
                       </div>

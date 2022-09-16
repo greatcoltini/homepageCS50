@@ -2,6 +2,8 @@ const apikey = "RGAPI-3250daad-23b6-43da-b257-91eb421653e0";
 
 var region="na1";
 
+const regions = {"na1": "NORTH AMERICA", "euw1":"EUROPE WEST", "kr": "KOREA"};
+
 var url ="https://"+region+".api.riotgames.com/lol/league-exp/v4/entries/RANKED_SOLO_5x5/CHALLENGER/I?page=1&api_key="+apikey;
 
 // define an array of champion name, id
@@ -183,6 +185,7 @@ async function startup() {
     url ="https://"+region+".api.riotgames.com/lol/league-exp/v4/entries/RANKED_SOLO_5x5/CHALLENGER/I?page=1&api_key="+apikey;
     createListSummoners();
     await pullSummonerData();
+    document.getElementById("titletext").innerHTML = "TOP 10 LEAGUE OF LEGENDS PLAYERS - " + regions[region];
     for (let i = 0; i < summoners.length; i++){
         await pullSummonerID(summoners[i]);
         await pullTopChamps(summoners[i]);
