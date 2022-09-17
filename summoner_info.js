@@ -1,4 +1,4 @@
-const apikey = "RGAPI-3250daad-23b6-43da-b257-91eb421653e0";
+const apikey = "RGAPI-a129a28e-eecc-40cd-abfb-89feae4457fa";
 
 var region="na1";
 
