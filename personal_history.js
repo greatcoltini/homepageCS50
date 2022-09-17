@@ -36,9 +36,10 @@ async function pullSummonerID(summoner){
     return fetch("https://"+region+".api.riotgames.com/lol/summoner/v4/summoners/by-name/"+summoner.name+"?api_key="+apikey)
         .then(data=>{return data.json()})
         .then(result=>{
+            alert(result.id);
             summoner.summonerID = result.id;
         })
-        .catch(error=>console.log(error))
+        .catch(error=>alert(error))
 }
 //
 //// takes in a summoner object, and adds their top 5 most played champions
