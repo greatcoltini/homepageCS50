@@ -1,22 +1,22 @@
-//const apikey = "RGAPI-a6fe8dac-088b-4944-a3fb-4dcf28e0c3bd";
-//
-//var region="na1";
-//
+const apikey = "RGAPI-a143e9e2-770c-402a-ad98-01b8f1da26f8";
+
+var region="na1";
+
 var url ="https://"+region+".api.riotgames.com/lol/league-exp/v4/entries/RANKED_SOLO_5x5/CHALLENGER/I?page=1&api_key="+apikey;
 //
 //// define an array of champion name, id
 //var champions = [];
 //
-//// define structure for a summoner object
-//function summoner()
-//{
-//    this.name = "";
-//    this.summonerID = "";
-//    this.rank = 0;
-//    this.top5 = [];
-//    this.lp = 0;
-//}
-//
+// define structure for a summoner object
+function summoner()
+{
+    this.name = "";
+    this.summonerID = "";
+    this.rank = 0;
+    this.top5 = [];
+    this.lp = 0;
+}
+
 var player = new summoner();
 //
 //// grabs summoner and rank from challenger list
@@ -31,15 +31,15 @@ var player = new summoner();
 //        .catch(error=>console.log(error))
 //}
 //
-//// Function to pull summoner id from API
-//async function pullSummonerID(summoner){
-//    return fetch("https://"+region+".api.riotgames.com/lol/summoner/v4/summoners/by-name/"+summoner.name+"?api_key="+apikey)
-//        .then(summdata=>{return summdata.json()})
-//        .then(result=>{
-//            summoner.summonerID = result.id;
-//        })
-//        .catch(error=>console.log(error))
-//}
+// Function to pull summoner id from API
+async function pullSummonerID(summoner){
+    return fetch("https://"+region+".api.riotgames.com/lol/summoner/v4/summoners/by-name/"+summoner.name+"?api_key="+apikey)
+        .then(data=>{return data.json()})
+        .then(result=>{
+            summoner.summonerID = result.id;
+        })
+        .catch(error=>console.log(error))
+}
 //
 //// takes in a summoner object, and adds their top 5 most played champions
 //async function pullTopChamps(summoner){
@@ -85,10 +85,12 @@ var player = new summoner();
 //}
 
 // search for summoner
-function searchSummoner() {
+async function searchSummoner() {
     summoner_input = document.getElementById("summoner_name");
     player.name = summoner_input.value;
+    await pullSummonerID(player);
     alert(player.name);
+    alert(player.summonerID);
 }
 
 //// function to clean window and start new -- region switch
