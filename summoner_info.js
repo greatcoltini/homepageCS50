@@ -1,10 +1,8 @@
-const apikey = "RGAPI-a129a28e-eecc-40cd-abfb-89feae4457fa";
-
 var region="na1";
 
 const regions = {"na1": "NORTH AMERICA", "euw1":"EUROPE WEST", "kr": "KOREA"};
 
-var url ="https://"+region+".api.riotgames.com/lol/league-exp/v4/entries/RANKED_SOLO_5x5/CHALLENGER/I?page=1&api_key="+apikey;
+var url ="https://"+region+".api.riotgames.com/lol/league-exp/v4/entries/RANKED_SOLO_5x5/CHALLENGER/I?page=1&api_key="+api_key_imp.key;
 
 // define an array of champion name, id
 var champions = [];
@@ -44,7 +42,7 @@ async function pullSummonerData() {
 
 // Function to pull summoner id from API
 async function pullSummonerID(summoner){
-    return fetch("https://"+region+".api.riotgames.com/lol/summoner/v4/summoners/by-name/"+summoner.name+"?api_key="+apikey)
+    return fetch("https://"+region+".api.riotgames.com/lol/summoner/v4/summoners/by-name/"+summoner.name+"?api_key="+api_key_imp.key)
         .then(summdata=>{return summdata.json()})
         .then(result=>{
             summoner.summonerID = result.id;
@@ -54,7 +52,7 @@ async function pullSummonerID(summoner){
 
 // takes in a summoner object, and adds their top 5 most played champions
 async function pullTopChamps(summoner){
-    return fetch("https://"+region+".api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/"+summoner.summonerID+"/top?count=5&api_key="+apikey)
+    return fetch("https://"+region+".api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/"+summoner.summonerID+"/top?count=5&api_key="+api_key_imp.key)
         .then(data=>{return data.json()})
         .then(res=>{
             for (let i = 0; i < 5; i++){
@@ -182,7 +180,7 @@ function removeAllChildNodes(parent) {
 
 
 async function startup() {
-    url ="https://"+region+".api.riotgames.com/lol/league-exp/v4/entries/RANKED_SOLO_5x5/CHALLENGER/I?page=1&api_key="+apikey;
+    url ="https://"+region+".api.riotgames.com/lol/league-exp/v4/entries/RANKED_SOLO_5x5/CHALLENGER/I?page=1&api_key="+api_key_imp.key;
     createListSummoners();
     await pullSummonerData();
     document.getElementById("titletext").innerHTML = "TOP 10 LEAGUE OF LEGENDS PLAYERS - " + regions[region];
