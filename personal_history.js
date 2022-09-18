@@ -2,8 +2,6 @@ const apikey = "RGAPI-a129a28e-eecc-40cd-abfb-89feae4457fa";
 
 var region= "na1";
 
-var summonerGrab = "";
-
 // define an array of champion name, id
 var champions = [];
 
@@ -20,21 +18,28 @@ function summoner()
 var player = new summoner();
 
 // Function to pull summoner id from API
-async function pullSummonerID(user){
-    return fetch("http://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/KatEvolved?api_key=RGAPI-a129a28e-eecc-40cd-abfb-89feae4457fa")
-        .then(summdata=>{return summdata.json()})
+async function pullSummonerID(user, url){
+     return fetch(url)
+        .then(data=>{return data.json()})
         .then(result=>{
             user.summonerID = result.id;
-            alert(user.summonerID);
         })
-        .catch(error=>console.log(error))
+        .catch(error=>alert(error))
 }
 
 // search for summoner
 async function searchSummoner() {
     summoner_input = document.getElementById("summoner_name");
     player.name = summoner_input.value;
-    summonerGrab = "https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/KatEvolved?api_key=RGAPI-a129a28e-eecc-40cd-abfb-89feae4457fa";
-    await pullSummonerID(player);
+    summonerGrab = "https://"+region+".api.riotgames.com/lol/summoner/v4/summoners/by-name/"+player.name+"?api_key="+apikey;
+    await pullSummonerID(player, summonerGrab);
+    alert(player.summonerID);
+    alert(player.name);
+}
+
+
+// function to populate 
+async function populate(){
+
 }
 
