@@ -72,6 +72,12 @@ async function pullSummonerID(user, url){
 //        .catch(error=>alert(error))
 //}
 
+//// Function to pull match data from API for each match
+async function pullIndividualMatch(matchID){
+    return fetch(matchURL)
+        .then()
+}
+
 //// search for summoner
 //async function searchSummoner() {
 //    summoner_input = document.getElementById("summoner_name");
