@@ -50,8 +50,8 @@ var matchHistory20 = [];
 var player = new summoner();
 
 // Function to pull summoner id from API
-async function pullSummonerID(user, url){
-     return fetch(url)
+async function pullSummonerID(user){
+     return fetch("https://"+region+".api.riotgames.com/lol/summoner/v4/summoners/by-name/"+user.name+"?api_key="+api_key_imp.key")
         .then(data=>{return data.json()})
         .then(result=>{
             user.summonerID = result.id;
@@ -73,23 +73,25 @@ async function pullSummonerID(user, url){
 //}
 
 //// Function to pull match data from API for each match
-async function pullIndividualMatch(matchID){
-    return fetch(matchURL)
-        .then()
-}
-
-//// search for summoner
-//async function searchSummoner() {
-//    summoner_input = document.getElementById("summoner_name");
-//    player.name = summoner_input.value;
-//    summonerGrab = "https://"+region+".api.riotgames.com/lol/summoner/v4/summoners/by-name/"+player.name+"?api_key="+api_key_imp.key;
-//    await pullSummonerID(player, summonerGrab);
-//    await pullMatchHistory(player);
-//    for (let i = 0; i < matchHistory20.length; i++)
-//    {
-//        populateSingleMatch(i);
-//    }
+//async function pullIndividualMatch(matchID){
+//    return fetch(matchURL)
+//        .then()
 //}
+
+// search for summoner
+function searchSummoner() {
+    summoner_input = document.getElementById("summoner_name");
+    player.name = summoner_input.value;
+    alert("got here");
+//    pullSummonerID(player);
+//    pullMatchHistory(player);
+    alert(player.puuid);
+    alert(player.summonerID);
+    for (let i = 0; i < matchHistory20.length; i++)
+    {
+        populateSingleMatch(i);
+    }
+}
 
 
 // function to populate matches into feed
