@@ -50,8 +50,8 @@ var matchHistory20 = [];
 var player = new summoner();
 
 // Function to pull summoner id from API
-async function pullSummonerID(user){
-     return fetch("https://"+region+".api.riotgames.com/lol/summoner/v4/summoners/by-name/"+user.name+"?api_key="+api_key_imp.key")
+function pullSummonerID(user){
+     return fetch("https://"+region+".api.riotgames.com/lol/summoner/v4/summoners/by-name/"+user.name+"?api_key="+api_key_imp.key)
         .then(data=>{return data.json()})
         .then(result=>{
             user.summonerID = result.id;
@@ -79,16 +79,16 @@ async function pullSummonerID(user){
 //}
 
 // search for summoner
-function searchSummoner() {
+async function searchSummoner() {
     summoner_input = document.getElementById("summoner_name");
     player.name = summoner_input.value;
-    alert("got here");
-//    pullSummonerID(player);
+    await pullSummonerID(player);
 //    pullMatchHistory(player);
     alert(player.puuid);
     alert(player.summonerID);
-    for (let i = 0; i < matchHistory20.length; i++)
+    for (let i = 0; i < 20; i++)
     {
+        genMatch(i);
         populateSingleMatch(i);
     }
 }
@@ -130,9 +130,3 @@ function populateSingleMatch(matchNumber){
     div_col_inner.append(r_hr, strong_text, q_hr, lp_text, side_text);
 }
 
-window.addEventListener('load', (event) => {
-    for (let i = 0; i < 20; i ++){
-        genMatch(i);
-        populateSingleMatch(i);
-    }
-})
