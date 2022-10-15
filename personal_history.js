@@ -19,7 +19,7 @@ function summoner()
 function match()
 {
     this.gameId = "";
-    this.playerId = "":
+    this.playerId = "";
     this.champPlayed = 0;
     this.victory = 0;
     this.lpGained = 0;
@@ -67,10 +67,10 @@ function pullMatchHistory(user){
         .then(data=>{return data.json()})
         .then(result=>{
             for (let i = 0; i < result.length; i++){
-              matchHistory20[i] = result[i];
-//                matchHistory20[i] = new match();
-//                matchHistory20[i].gameId = result[i];
-//                alert(matchHistory20[i].gameId);
+//              matchHistory20[i] = result[i];
+                matchHistory20[i] = new match();
+                matchHistory20[i].gameId = result[i];
+                alert(matchHistory20[i].gameId);
             }
         })
         .catch(error=>alert(error))
