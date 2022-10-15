@@ -19,6 +19,7 @@ function summoner()
 function match()
 {
     this.gameId = "";
+    this.playerId = "":
     this.champPlayed = 0;
     this.victory = 0;
     this.lpGained = 0;
@@ -60,22 +61,32 @@ function pullSummonerID(user){
         .catch(error=>alert(error))
 }
 
-//// Function to pull past 20 matches from summoner from API
-//async function pullMatchHistory(user){
-//    return fetch("https://"+morebasicregion+".api.riotgames.com/lol/match/v5/matches/by-puuid/"+user.puuid+"/ids?start=0&count=20&api_key="+api_key_imp.key)
-//        .then(data=>{return data.json()})
-//        .then(result=>{
-//            for (let i = 0; i < result.length; i++){
-//                matchHistory20[i] = result[i];
-//            }
-//        })
-//        .catch(error=>alert(error))
-//}
+// Function to pull past 20 matches from summoner from API
+function pullMatchHistory(user){
+    return fetch("https://"+morebasicregion+".api.riotgames.com/lol/match/v5/matches/by-puuid/"+user.puuid+"/ids?start=0&count=20&api_key="+api_key_imp.key)
+        .then(data=>{return data.json()})
+        .then(result=>{
+            for (let i = 0; i < result.length; i++){
+              matchHistory20[i] = result[i];
+//                matchHistory20[i] = new match();
+//                matchHistory20[i].gameId = result[i];
+//                alert(matchHistory20[i].gameId);
+            }
+        })
+        .catch(error=>alert(error))
+}
 
 //// Function to pull match data from API for each match
-//async function pullIndividualMatch(matchID){
-//    return fetch(matchURL)
-//        .then()
+//async function pullIndividualMatch(match){
+//    return fetch("https://"+morebasicregion+".api.riotgames.com/lol/match/v5/matches/"+matchID+"?api_key="+api_key_imp.key)
+//        .then(data=>{return data.json()})
+//        .then(result=>{
+//            // first find participant == player
+//            // then compare teamid to winning teamid; if true match is won
+//            // use teamid to fill blue/red side
+//            // use champion id to find champ played
+//            return
+//        })
 //}
 
 // search for summoner
@@ -83,7 +94,7 @@ async function searchSummoner() {
     summoner_input = document.getElementById("summoner_name");
     player.name = summoner_input.value;
     await pullSummonerID(player);
-//    pullMatchHistory(player);
+    await pullMatchHistory(player);
     alert(player.puuid);
     alert(player.summonerID);
     for (let i = 0; i < 20; i++)
