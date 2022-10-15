@@ -20,10 +20,13 @@ function match()
 {
     this.gameId = "";
     this.playerId = "";
-    this.champPlayed = 0;
+    this.champPlayed = "";
     this.victory = 0;
     this.lpGained = 0;
     this.side = "";
+    this.kills = 0;
+    this.deaths = 0;
+    this.assists = 0;
 }
 
 // Function returns a random integer between min and max inclusive
@@ -67,27 +70,35 @@ function pullMatchHistory(user){
         .then(data=>{return data.json()})
         .then(result=>{
             for (let i = 0; i < result.length; i++){
-//              matchHistory20[i] = result[i];
                 matchHistory20[i] = new match();
                 matchHistory20[i].gameId = result[i];
-                alert(matchHistory20[i].gameId);
             }
         })
         .catch(error=>alert(error))
 }
 
-//// Function to pull match data from API for each match
-//async function pullIndividualMatch(match){
-//    return fetch("https://"+morebasicregion+".api.riotgames.com/lol/match/v5/matches/"+matchID+"?api_key="+api_key_imp.key)
-//        .then(data=>{return data.json()})
-//        .then(result=>{
-//            // first find participant == player
-//            // then compare teamid to winning teamid; if true match is won
-//            // use teamid to fill blue/red side
-//            // use champion id to find champ played
-//            return
-//        })
-//}
+// Function to pull match data from API for each match
+async function pullIndividualMatch(match){
+    return fetch("https://"+morebasicregion+".api.riotgames.com/lol/match/v5/matches/"+match.gameId+"?api_key="+api_key_imp.key)
+        .then(data=>{return data.json()})
+        .then(result=>{
+
+            playerInfo = 0;
+            // first find participant == player
+            for (let i = 0; i < 10; i++){
+                if (result.info.participants[i].puuid == match.playerId){
+                    playerInfo = i;
+                }
+            }
+            match.victory = result.info.participants[playerInfo].win;
+            match.champPlayed = result.info.participants[playerInfo].championName;
+            match.side = result.info.participants[playerInfo].teamid;
+            match.kills = result.info.participants[playerInfo].kills;
+            match.assists = result.info.participants[playerInfo].assists;
+            match.deaths = result.info.participants[playerInfo].deaths;
+        })
+        .catch(error=>alert(error))
+}
 
 // search for summoner
 async function searchSummoner() {
@@ -95,11 +106,10 @@ async function searchSummoner() {
     player.name = summoner_input.value;
     await pullSummonerID(player);
     await pullMatchHistory(player);
-    alert(player.puuid);
-    alert(player.summonerID);
-    for (let i = 0; i < 20; i++)
+    for (let i = 0; i < matchHistory20.length; i++)
     {
-        genMatch(i);
+        await pullIndividualMatch(matchHistory20[i]);
+//        genMatch(i);
         populateSingleMatch(i);
     }
 }
@@ -127,7 +137,10 @@ function populateSingleMatch(matchNumber){
     let r_hr = document.createElement('hr');
 
     let lp_text = document.createElement("h3");
-    lp_text.innerHTML = "LP DIFFERENCE: " + matchHistory20[matchNumber].lpGained;
+    lp_text.innerHTML = "K/D/A : " + matchHistory20[matchNumber].kills + "/" + matchHistory20[matchNumber].deaths + "/" + matchHistory20[matchNumber].assists;
+
+    let champ_played = document.createElement("h3");
+    champ_played = matchHistory20[matchNumber].champPlayed;
 
     let side_text = document.createElement("h3");
     side_text.innerHTML = matchHistory20[matchNumber].side;
@@ -138,6 +151,6 @@ function populateSingleMatch(matchNumber){
     div_col_outer.append(div_row);
     div_col_outer.classList.add("container");
     div_row.append(div_col_inner);
-    div_col_inner.append(r_hr, strong_text, q_hr, lp_text, side_text);
+    div_col_inner.append(r_hr, strong_text, q_hr, lp_text, champ_played, side_text);
 }
 
