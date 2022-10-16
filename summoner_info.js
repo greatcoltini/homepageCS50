@@ -7,6 +7,9 @@ var url ="https://"+region+".api.riotgames.com/lol/league-exp/v4/entries/RANKED_
 // define an array of champion name, id
 var champions = [];
 
+// populating var
+var populating = true;
+
 // define structure for a summoner object
 function summoner()
 {
@@ -173,9 +176,6 @@ function removeAllChildNodes(parent) {
         parent.removeChild(parent.firstChild);
     }
     parent.appendChild(saved_node);
-    summoners = [];
-    champions = [];
-    startup();
 }
 
 
@@ -203,9 +203,12 @@ function switchRegions() {
   document.getElementById("dropdown").classList.toggle("show");
 }
 
-function changeRegion(target) {
+async function changeRegion(target) {
     region = target.id;
-    removeAllChildNodes(document.getElementById("chalrows"));
+    await removeAllChildNodes(document.getElementById("chalrows"));
+    summoners = [];
+    champions = [];
+    startup();
 }
 
 // Close the dropdown menu if the user clicks outside of it
