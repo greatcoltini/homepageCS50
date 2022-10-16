@@ -15,6 +15,15 @@ function summoner()
     this.lp = 0;
 }
 
+function match_player()
+{
+    this.position = "";
+    this.champion = "";
+    this.name = "";
+    this.kda = "";
+    this.teamOrder = 0;
+}
+
 // define structure for match
 function match()
 {
@@ -28,6 +37,8 @@ function match()
     this.deaths = 0;
     this.assists = 0;
     this.fetched = false;
+    this.red_team = [];
+    this.blue_team = [];
 }
 
 // Function returns a random integer between min and max inclusive
@@ -37,6 +48,8 @@ function getRndInteger(min, max) {
 
 // list of past 20 matches
 var matchHistory20 = [];
+var red_team = [];
+var blue_team = [];
 
 var player = new summoner();
 
@@ -70,27 +83,93 @@ async function pullIndividualMatch(match){
         .then(data=>{return data.json()})
         .then(result=>{
 
-            playerInfo = 0;
             // first find participant == player
             for (let i = 0; i < 10; i++){
                 if (result.info.participants[i].puuid == player.puuid){
-                    playerInfo = i;
+                    match.victory = result.info.participants[i].win;
+                    match.champPlayed = result.info.participants[i].championName;
+                    if (result.info.participants[i].teamId == 200){
+                        match.side = "Red";
+                    }
+                    else {
+                        match.side = "Blue";
+                    }
+                    match.kills = result.info.participants[i].kills;
+                    match.assists = result.info.participants[i].assists;
+                    match.deaths = result.info.participants[i].deaths;
+                }
+
+                if (result.info.participants[i].teamId == 200) {
+                    populate_team(result.info.participants[i], match.red_team);
+                }
+                else {
+                    populate_team(result.info.participants[i], match.blue_team);
                 }
             }
-            match.victory = result.info.participants[playerInfo].win;
-            match.champPlayed = result.info.participants[playerInfo].championName;
-            if (result.info.participants[playerInfo].teamId == 200){
-                match.side = "Red";
-            }
-            else {
-                match.side = "Blue";
-            }
-            match.kills = result.info.participants[playerInfo].kills;
-            match.assists = result.info.participants[playerInfo].assists;
-            match.deaths = result.info.participants[playerInfo].deaths;
+
             match.fetched = true;
         })
         .catch(error=>alert(error))
+}
+
+// takes in a match participant, a summoner object, and a team, and fills the team with the summoner
+function populate_team(match_participant, team){
+    cur_player = new match_player();
+    cur_player.position = match_participant.teamPosition;
+    cur_player.champion = match_participant.championName;
+    cur_player.name = match_participant.summonerName;
+    cur_player.kda = match_participant.kills + "/" + match_participant.deaths + "/" + match_participant.assists;
+    cur_player.teamOrder = set_team_order(match_participant.teamPosition);
+    // set team order
+    team.push(cur_player);
+}
+
+// function for determining team order
+function set_team_order(team_pos){
+    if (team_pos == "TOP"){
+        return 0
+    }
+    else if (team_pos == "JUNGLE"){
+        return 1
+    }
+    else if (team_pos == "MIDDLE"){
+        return 2
+    }
+    else if (team_pos == "BOTTOM"){
+        return 3
+    }
+    else {
+        return 4
+    }
+}
+
+// takes in a team, generates their container
+function generate_team_container(t){
+    t.sort(function(a, b) {
+        return parseFloat(a.teamOrder) - parseFloat(b.teamOrder);
+    });
+
+    let team_container = document.createElement("div");
+    team_container.classList.add("row", "p-2", "mx-auto", "d-flex", "flex-md-row", "position-relative");
+
+    for (let i = 0; i < 5; i++){
+        team_container.append(generate_summoner_container(t[i]));
+    }
+
+    return team_container;
+}
+
+// takes in a summoner from one team, generates their container
+function generate_summoner_container(s){
+    let summoner_container = document.createElement("div");
+
+    let name_text = document.createElement("strong");
+    name_text.classList.add("mb-2", "mx-auto");
+    name_text.innerHTML = s.name;
+
+    summoner_container.append(name_text);
+
+    return summoner_container;
 }
 
 // search for summoner
@@ -103,7 +182,6 @@ async function searchSummoner() {
     for (let i = 0; i < matchHistory20.length; i++)
     {
         await pullIndividualMatch(matchHistory20[i]);
-//        genMatch(i);
         if (matchHistory20[i].fetched == true){
             populateSingleMatch(i);
         }
@@ -129,15 +207,18 @@ function populateSingleMatch(matchNumber){
     let div_row = document.createElement("div");
     div_row.classList.add("row", "g-0", "border", "rounded",
                         "overflow-hidden", "flex-md-row", "mb-2", "shadow-sm",
-                         "h-md-300", "position-relative");
+                         "h-md-300", "position-relative", "match");
 
 
 
     let div_col_inner = document.createElement("div");
-    div_col_inner.classList.add("col", "p-2", "d-flex", "flex-column", "position-relative");
+    div_col_inner.classList.add("col", "p-2", "d-flex", "flex-column", "position-relative", "match");
 
     let div_col_middle = document.createElement("div");
-    div_col_middle.classList.add("col", "p-2", "d-flex", "flex-column", "position-relative");
+    div_col_middle.classList.add("col", "p-2", "d-flex", "flex-column", "position-relative", "match");
+
+    let div_col_teams = document.createElement("div");
+    div_col_teams.classList.add("col", "p-2", "d-flex", "flex-column", "position-relative", "match");
 
 
 
@@ -168,11 +249,13 @@ function populateSingleMatch(matchNumber){
     let side_text = document.createElement("h3");
     side_text.innerHTML = currMatch.side;
 
+    div_col_teams.append(generate_team_container(currMatch.blue_team), generate_team_container(currMatch.red_team));
+
 
     document.getElementById("matchhistory").append(div_col_outer);
     div_col_outer.append(div_row);
     div_col_outer.classList.add("container");
-    div_row.append(r_hr, strong_text, q_hr, div_col_inner, div_col_middle);
+    div_row.append(r_hr, strong_text, q_hr, div_col_inner, div_col_middle, div_col_teams);
     div_col_inner.append(kda_text, champ_played, side_text);
 
     var img = document.createElement("img");
