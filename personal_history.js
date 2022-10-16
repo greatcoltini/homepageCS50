@@ -15,6 +15,13 @@ function summoner()
     this.lp = 0;
 }
 
+function player()
+{
+    this.position = "";
+    this.champion = "";
+    this.name = "";
+}
+
 // define structure for match
 function match()
 {
@@ -37,6 +44,8 @@ function getRndInteger(min, max) {
 
 // list of past 20 matches
 var matchHistory20 = [];
+var red_team = [];
+var blue_team = [];
 
 var player = new summoner();
 
@@ -70,27 +79,42 @@ async function pullIndividualMatch(match){
         .then(data=>{return data.json()})
         .then(result=>{
 
-            playerInfo = 0;
             // first find participant == player
             for (let i = 0; i < 10; i++){
                 if (result.info.participants[i].puuid == player.puuid){
-                    playerInfo = i;
+                    match.victory = result.info.participants[i].win;
+                    match.champPlayed = result.info.participants[i].championName;
+                    if (result.info.participants[i].teamId == 200){
+                        match.side = "Red";
+                    }
+                    else {
+                        match.side = "Blue";
+                    }
+                    match.kills = result.info.participants[i].kills;
+                    match.assists = result.info.participants[i].assists;
+                    match.deaths = result.info.participants[i].deaths;
+                }
+
+                if (result.info.participants[i].teamId == 200) {
+                    populate_team(result.info.participants[i], red_team);
+                }
+                else {
+                    populate_team(result.info.participants[i], blue_team);
                 }
             }
-            match.victory = result.info.participants[playerInfo].win;
-            match.champPlayed = result.info.participants[playerInfo].championName;
-            if (result.info.participants[playerInfo].teamId == 200){
-                match.side = "Red";
-            }
-            else {
-                match.side = "Blue";
-            }
-            match.kills = result.info.participants[playerInfo].kills;
-            match.assists = result.info.participants[playerInfo].assists;
-            match.deaths = result.info.participants[playerInfo].deaths;
+
             match.fetched = true;
         })
         .catch(error=>alert(error))
+}
+
+// takes in a match participant, a summoner object, and a team, and fills the team with the summoner
+function populate_team(match_participant, team){
+    cur_player = new player();
+    cur_player.position = match_participant.role;
+    cur_player.champion = match_participant.championName;
+    cur_player.name = match_participant.summonerName;
+    team.push(cur_player);
 }
 
 // search for summoner
