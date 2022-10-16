@@ -35,20 +35,6 @@ function getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// function to generate random matches for testing
-function genMatch(id){
-    matchHistory20[id] = new match();
-    matchHistory20[id].victory = getRndInteger(0, 1);
-    matchHistory20[id].lpGained = getRndInteger(0, 20);
-    rnd = getRndInteger(0, 1);
-    if (rnd == 1){
-        matchHistory20[id].side = "Blue";
-    }
-    else {
-        matchHistory20[id].side = "Red";
-    }
-}
-
 // list of past 20 matches
 var matchHistory20 = [];
 
@@ -124,17 +110,14 @@ async function searchSummoner() {
     }
 }
 
+// refreshes match history
 function eliminateExistingMatches(){
-    removeAllChildNodes(document.getElementById("matchhistory"));
+    parent = document.getElementById("matchhistory");
+    while (parent.firstChild){
+        parent.removeChild(parent.firstChild);
+    }
     return 0;
 }
-
-function removeAllChildNodes(parent){
-    while (parent.firstChild) {
-            parent.removeChild(parent.firstChild);
-    }
-}
-
 
 // function to populate matches into feed
 function populateSingleMatch(matchNumber){

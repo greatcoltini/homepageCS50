@@ -1,4 +1,13 @@
 .char{
-    max-width: 30%;
-    max-height: 60%;
+    width: 5vw;
+    height: 5vw;
+}
+
+.section {
+    padding: 0.5rem 2rem 1rem 2rem;
+}
+
+.section:hover {
+    background-color: #f5f5f5;
+    transition: color 2s ease-in-out, background-color 0.15s ease-in-out;
 }
