@@ -163,10 +163,15 @@ function generate_team_container(t){
 function generate_summoner_container(s){
     let summoner_container = document.createElement("div");
 
+    var c_ico = document.createElement("img");
+    c_ico.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+s.champion+".png";
+    c_ico.classList.add("c_ico");
+
     let name_text = document.createElement("strong");
     name_text.classList.add("mb-2", "mx-auto");
-    name_text.innerHTML = s.name;
+    name_text.innerHTML = s.name + " - " + s.kda;
 
+    summoner_container.append(c_ico);
     summoner_container.append(name_text);
 
     return summoner_container;
@@ -207,18 +212,16 @@ function populateSingleMatch(matchNumber){
     let div_row = document.createElement("div");
     div_row.classList.add("row", "g-0", "border", "rounded",
                         "overflow-hidden", "flex-md-row", "mb-2", "shadow-sm",
-                         "h-md-300", "position-relative", "match");
-
-
+                         "h-md-300", "position-relative");
 
     let div_col_inner = document.createElement("div");
-    div_col_inner.classList.add("col", "p-2", "d-flex", "flex-column", "position-relative", "match");
+    div_col_inner.classList.add("col", "p-2", "d-flex", "flex-column", "position-relative");
 
     let div_col_middle = document.createElement("div");
-    div_col_middle.classList.add("col", "p-2", "d-flex", "flex-column", "position-relative", "match");
+    div_col_middle.classList.add("col", "p-2", "d-flex", "flex-column", "position-relative");
 
     let div_col_teams = document.createElement("div");
-    div_col_teams.classList.add("col", "p-2", "d-flex", "flex-column", "position-relative", "match");
+    div_col_teams.classList.add("col", "p-2", "d-flex", "flex-column", "position-relative");
 
 
 
@@ -232,12 +235,20 @@ function populateSingleMatch(matchNumber){
     let r_hr = document.createElement('hr');
 
     if (currMatch.victory){
-        div_row.classList.add("bg-success");
+        div_row.classList.add("bg-primary");
         strong_text.innerHTML += " - VICTORY";
+        div_row.classList.add("match_won");
+        div_col_inner.classList.add("match_won");
+        div_col_middle.classList.add("match_won");
+        div_col_teams.classList.add("match_won");
     }
     else {
         div_row.classList.add("bg-danger");
         strong_text.innerHTML += " - DEFEAT";
+        div_row.classList.add("match_lost");
+        div_col_inner.classList.add("match_lost");
+        div_col_middle.classList.add("match_lost");
+        div_col_teams.classList.add("match_lost");
     }
 
     let kda_text = document.createElement("h3");

@@ -1,3 +1,3 @@
 var api_key_imp = {
-    key : "RGAPI-3a752db8-8306-4783-bf2c-d5a877ff2e22"
+    key : "RGAPI-d7d4ad31-b203-4ecc-ac5c-a72225a9cb93"
 }
