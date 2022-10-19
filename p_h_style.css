@@ -8,14 +8,24 @@
     height: 1vw;
 }
 
+.summoner_container{
+    cursor: pointer;
+}
+
+.summoner_container:hover {
+    opacity: 0.5;
+    color: blue;
+    transition: color 0.5s ease-in-out, opacity 0.5s ease-in-out;
+}
+
 .match_won {
     padding: 0.5rem 2rem 1rem 2rem;
 }
 
 .match_won:hover {
     background-color: #1675fa;
-    opacity: 0.5;
-    transition: color 2s ease-in-out, background-color 0.15s ease-in-out;
+    opacity: 0.90;
+    transition: color 2s ease-in-out, background-color 0.15s ease-in-out, opacity 0.35s ease-in-out;
 }
 
 .match_lost {
@@ -24,6 +34,6 @@
 
 .match_lost:hover {
     background-color: #a3152d;
-    opacity: 0.5;
-    transition: color 2s ease-in-out, background-color 0.15s ease-in-out;
+    opacity: 0.90;
+    transition: color 2s ease-in-out, background-color 0.15s ease-in-out, opacity 0.35s ease-in-out;
 }
