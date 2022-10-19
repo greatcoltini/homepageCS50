@@ -28,6 +28,7 @@ function match_player()
 function match()
 {
     this.gameId = "";
+    this.queueId = 0;
     this.playerId = "";
     this.champPlayed = "";
     this.victory = 0;
@@ -107,6 +108,7 @@ async function pullIndividualMatch(match){
                 }
             }
 
+            match.queueId = result.info.queueId;
             match.fetched = true;
         })
         .catch(error=>alert(error))
@@ -162,6 +164,7 @@ function generate_team_container(t){
 // takes in a summoner from one team, generates their container
 function generate_summoner_container(s){
     let summoner_container = document.createElement("div");
+    summoner_container.classList.add("summoner_container");
 
     var c_ico = document.createElement("img");
     c_ico.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+s.champion+".png";
@@ -173,15 +176,18 @@ function generate_summoner_container(s){
 
     summoner_container.append(c_ico);
     summoner_container.append(name_text);
+    summoner_container.onclick = function(){
+        search_for_summoner(s.name);
+    };
 
     return summoner_container;
 }
 
-// search for summoner
-async function searchSummoner() {
+// function for searching for summoner
+async function search_for_summoner(name){
+    document.getElementById("summoner_name").value = name;
     await eliminateExistingMatches();
-    summoner_input = document.getElementById("summoner_name");
-    player.name = summoner_input.value;
+    player.name = name;
     await pullSummonerID(player);
     await pullMatchHistory(player);
     for (let i = 0; i < matchHistory20.length; i++)
@@ -193,6 +199,12 @@ async function searchSummoner() {
     }
 }
 
+// search for summoner
+function searchSummoner() {
+    summoner_input = document.getElementById("summoner_name");
+    search_for_summoner(summoner_input.value);
+}
+
 // refreshes match history
 function eliminateExistingMatches(){
     parent = document.getElementById("matchhistory");
@@ -200,6 +212,16 @@ function eliminateExistingMatches(){
         parent.removeChild(parent.firstChild);
     }
     return 0;
+}
+
+// change state function
+function changeState(div_row){
+    var nodes = div_row.getElementsByClassName("expanded");
+    for(var i=0; i<nodes.length; i++) {
+        alert(nodes[i]);
+        nodes[i].hidden = !nodes[i].hidden;
+    }
+    window.update();
 }
 
 // function to populate matches into feed
@@ -215,21 +237,21 @@ function populateSingleMatch(matchNumber){
                          "h-md-300", "position-relative");
 
     let div_col_inner = document.createElement("div");
-    div_col_inner.classList.add("col", "p-2", "d-flex", "flex-column", "position-relative");
+    div_col_inner.classList.add("col", "p-2", "d-flex", "flex-column", "position-relative", "expanded");
 
     let div_col_middle = document.createElement("div");
-    div_col_middle.classList.add("col", "p-2", "d-flex", "flex-column", "position-relative");
+    div_col_middle.classList.add("col", "p-2", "d-flex", "flex-column", "position-relative", "expanded");
 
     let div_col_teams = document.createElement("div");
-    div_col_teams.classList.add("col", "p-2", "d-flex", "flex-column", "position-relative");
+    div_col_teams.classList.add("col", "p-2", "d-flex", "flex-column", "position-relative", "expanded");
 
-
+    let header_section = document.createElement("row");
+    header_section.classList.add("header");
 
     let strong_text = document.createElement("strong");
-    strong_text.classList.add("mb-2", "text-primary", "mx-auto");
+    strong_text.classList.add("mb-2", "mx-auto");
     strong_text.innerHTML = "MATCH " + (matchNumber + 1);
-
-
+    header_section.appendChild(strong_text);
 
     let q_hr = document.createElement('hr');
     let r_hr = document.createElement('hr');
@@ -238,18 +260,31 @@ function populateSingleMatch(matchNumber){
         div_row.classList.add("bg-primary");
         strong_text.innerHTML += " - VICTORY";
         div_row.classList.add("match_won");
-        div_col_inner.classList.add("match_won");
-        div_col_middle.classList.add("match_won");
-        div_col_teams.classList.add("match_won");
     }
     else {
         div_row.classList.add("bg-danger");
         strong_text.innerHTML += " - DEFEAT";
         div_row.classList.add("match_lost");
-        div_col_inner.classList.add("match_lost");
-        div_col_middle.classList.add("match_lost");
-        div_col_teams.classList.add("match_lost");
     }
+
+    if (currMatch.queueId == 420){
+        strong_text.innerHTML += " - RANKED SOLO QUEUE";
+    }
+    else if (currMatch.queueId == 440){
+        strong_text.innerHTML += " - RANKED FLEX";
+    }
+    else if (currMatch.queueId == 700){
+        strong_text.innerHTML += " - CLASH";
+        div_row.classList.add("bg-success");
+        div_row.classList.remove("bg-danger");
+    }
+    else{
+        strong_text.innerHTML += " - REGULAR MATCH";
+    }
+
+    let more_arrow = document.createElement("i");
+    more_arrow.classList.add("bi", "bi-arrow-down");
+    header_section.appendChild(more_arrow);
 
     let kda_text = document.createElement("h3");
     kda_text.innerHTML = "K/D/A : " + currMatch.kills + "/" + currMatch.deaths + "/" + currMatch.assists;
@@ -260,18 +295,24 @@ function populateSingleMatch(matchNumber){
     let side_text = document.createElement("h3");
     side_text.innerHTML = currMatch.side;
 
-    div_col_teams.append(generate_team_container(currMatch.blue_team), generate_team_container(currMatch.red_team));
-
+    div_col_teams.append(generate_team_container(currMatch.blue_team), r_hr, generate_team_container(currMatch.red_team));
 
     document.getElementById("matchhistory").append(div_col_outer);
     div_col_outer.append(div_row);
     div_col_outer.classList.add("container");
-    div_row.append(r_hr, strong_text, q_hr, div_col_inner, div_col_middle, div_col_teams);
+    div_row.append(header_section, q_hr, div_col_inner, div_col_middle, div_col_teams);
     div_col_inner.append(kda_text, champ_played, side_text);
 
     var img = document.createElement("img");
     img.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+currMatch.champPlayed+".png";
     img.classList.add("char");
     div_col_middle.appendChild(img);
+
+    div_row.addEventListener('mousedown', (event) => {changeState(this)});
 }
 
+document.addEventListener("keyup", function(event) {
+    if (event.code === 'Enter') {
+        searchSummoner();
+    }
+});
