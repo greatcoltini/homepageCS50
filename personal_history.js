@@ -4,6 +4,8 @@ var morebasicregion = "americas";
 // define an array of champion name, id
 var champions = [];
 
+var winLoss = 0;
+
 // define structure for a summoner object
 function summoner()
 {
@@ -15,6 +17,7 @@ function summoner()
     this.lp = 0;
 }
 
+// define structure for player in the match
 function match_player()
 {
     this.position = "";
@@ -47,11 +50,10 @@ function getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// list of past 20 matches
+// variables for match information
 var matchHistory20 = [];
 var red_team = [];
 var blue_team = [];
-
 var player = new summoner();
 
 // Function to pull summoner id from API
@@ -126,27 +128,28 @@ function populate_team(match_participant, team){
     team.push(cur_player);
 }
 
+// dict for team order numeration
+var team_order = {
+    "TOP": 0,
+    "JUNGLE": 1,
+    "MIDDLE": 2,
+    "BOTTOM": 3,
+    "UTILITY": 4
+}
+
+var match_type = {
+    420 : "RANKED SOLO QUEUE",
+    440 : "RANKED FLEX QUEUE",
+    700 : "CLASH"
+}
+
 // function for determining team order
 function set_team_order(team_pos){
-    if (team_pos == "TOP"){
-        return 0
-    }
-    else if (team_pos == "JUNGLE"){
-        return 1
-    }
-    else if (team_pos == "MIDDLE"){
-        return 2
-    }
-    else if (team_pos == "BOTTOM"){
-        return 3
-    }
-    else {
-        return 4
-    }
+    return team_order[team_pos];
 }
 
 // takes in a team, generates their container
-function generate_team_container(t){
+function generate_team_container(t, side){
     t.sort(function(a, b) {
         return parseFloat(a.teamOrder) - parseFloat(b.teamOrder);
     });
@@ -155,16 +158,28 @@ function generate_team_container(t){
     team_container.classList.add("row", "p-2", "mx-auto", "d-flex", "flex-md-row", "position-relative");
 
     for (let i = 0; i < 5; i++){
-        team_container.append(generate_summoner_container(t[i]));
+        team_container.append(generate_summoner_container(t[i], side));
     }
 
     return team_container;
 }
 
 // takes in a summoner from one team, generates their container
-function generate_summoner_container(s){
+function generate_summoner_container(s, team_side){
+
     let summoner_container = document.createElement("div");
     summoner_container.classList.add("summoner_container");
+    summoner_container.classList.add("rounded");
+
+    // coloration based on the sides
+    if (team_side == 0){
+        summoner_container.style.backgroundColor = "#5139C6";
+        summoner_container.classList.add("blue_team");
+    }
+    else {
+        summoner_container.style.backgroundColor = "#AD0000";
+        summoner_container.classList.add("red_team");
+    }
 
     var c_ico = document.createElement("img");
     c_ico.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+s.champion+".png";
@@ -173,6 +188,15 @@ function generate_summoner_container(s){
     let name_text = document.createElement("strong");
     name_text.classList.add("mb-2", "mx-auto");
     name_text.innerHTML = s.name + " - " + s.kda;
+
+    if (s.name == player.name){
+        summoner_container.classList.remove("bg-info");
+        summoner_container.classList.remove("bg-warning");
+        summoner_container.classList.remove("red_team");
+        summoner_container.classList.remove("blue_team");
+        summoner_container.classList.add("bg-success");
+        summoner_container.classList.add("player");
+    }
 
     summoner_container.append(c_ico);
     summoner_container.append(name_text);
@@ -190,6 +214,7 @@ async function search_for_summoner(name){
     player.name = name;
     await pullSummonerID(player);
     await pullMatchHistory(player);
+    populateSummonerDisplay();
     for (let i = 0; i < matchHistory20.length; i++)
     {
         await pullIndividualMatch(matchHistory20[i]);
@@ -199,10 +224,47 @@ async function search_for_summoner(name){
     }
 }
 
+function populateSummonerDisplay(){
+     let display_main = document.createElement("div");
+     display_main.classList.add("row", "g-0", "border", "rounded",
+                            "overflow-hidden", "flex-md-row", "mb-2", "shadow-sm",
+                             "h-md-300", "position-relative");
+
+     let win_bar = document.createElement("div");
+     win_bar.classList.add("progress");
+
+     let wins = document.createElement("div");
+     wins.classList.add("progress-bar");
+     wins.ariaValueMin = 0;
+     wins.ariaValueMax = winLoss;
+     wins.id = "wins";
+
+     let losses = document.createElement("div");
+     losses.classList.add("progress-bar");
+     losses.ariaValueMin = winLoss;
+     losses.ariaValueMax = 100;
+     losses.classList.add("bg-danger");
+     losses.id = "losses";
+
+     win_bar.append(wins);
+     win_bar.append(losses);
+
+     display_main.append(win_bar);
+
+     document.getElementById("matchhistory").append(display_main);
+}
+
 // search for summoner
 function searchSummoner() {
     summoner_input = document.getElementById("summoner_name");
     search_for_summoner(summoner_input.value);
+}
+
+// function for key search
+function keySearch(){
+    if (event.code == 'Enter'){
+        searchSummoner();
+    }
 }
 
 // refreshes match history
@@ -211,6 +273,7 @@ function eliminateExistingMatches(){
     while (parent.firstChild){
         parent.removeChild(parent.firstChild);
     }
+    winLoss = 0;
     return 0;
 }
 
@@ -218,10 +281,15 @@ function eliminateExistingMatches(){
 function changeState(div_row){
     var nodes = div_row.getElementsByClassName("expanded");
     for(var i=0; i<nodes.length; i++) {
-        alert(nodes[i]);
-        nodes[i].hidden = !nodes[i].hidden;
+        if(nodes[i].classList.contains("hidden")){
+            nodes[i].classList.remove("hidden");
+            div_row.classList.remove("h-md-300");
+        }
+        else {
+            nodes[i].classList.add("hidden");
+            div_row.classList.add("h-md-300");
+        }
     }
-    window.update();
 }
 
 // function to populate matches into feed
@@ -260,6 +328,7 @@ function populateSingleMatch(matchNumber){
         div_row.classList.add("bg-primary");
         strong_text.innerHTML += " - VICTORY";
         div_row.classList.add("match_won");
+        winLoss = winLoss + 1;
     }
     else {
         div_row.classList.add("bg-danger");
@@ -295,7 +364,7 @@ function populateSingleMatch(matchNumber){
     let side_text = document.createElement("h3");
     side_text.innerHTML = currMatch.side;
 
-    div_col_teams.append(generate_team_container(currMatch.blue_team), r_hr, generate_team_container(currMatch.red_team));
+    div_col_teams.append(generate_team_container(currMatch.blue_team, 0), r_hr, generate_team_container(currMatch.red_team, 1));
 
     document.getElementById("matchhistory").append(div_col_outer);
     div_col_outer.append(div_row);
@@ -308,11 +377,15 @@ function populateSingleMatch(matchNumber){
     img.classList.add("char");
     div_col_middle.appendChild(img);
 
-    div_row.addEventListener('mousedown', (event) => {changeState(this)});
-}
+    div_row.onclick = function() {changeState(this)};
 
-document.addEventListener("keyup", function(event) {
-    if (event.code === 'Enter') {
-        searchSummoner();
-    }
-});
+    let wins = document.getElementById("wins");
+    wins.ariaValueNow = winLoss;
+    wins.style.width = String(winLoss * 100 / 20) + "%";
+    wins.innerHTML = winLoss + " wins out of 20.";
+
+    let losses = document.getElementById("losses");
+    losses.ariaValueNow = (100 - winLoss);
+    losses.style.width = String(100 - winLoss / 20) + "%";
+    losses.innerHTML = (20 - winLoss) + " losses out of 20.";
+}

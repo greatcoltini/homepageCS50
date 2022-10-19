@@ -1,20 +1,34 @@
 .char{
-    width: 5vw;
-    height: 5vw;
+    width: 10vw;
+    height: 10vw;
+    display: flex;
+    justify-content: center;
 }
 
 .c_ico{
-    width: 1vw;
-    height: 1vw;
+    width: 1.5vw;
+    height: 1.5vw;
 }
 
 .summoner_container{
     cursor: pointer;
 }
 
-.summoner_container:hover {
+.blue_team:hover {
     opacity: 0.5;
     color: blue;
+    transition: color 0.5s ease-in-out, opacity 0.5s ease-in-out;
+}
+
+.red_team:hover {
+    opacity: 0.5;
+    color: red;
+    transition: color 0.5s ease-in-out, opacity 0.5s ease-in-out;
+}
+
+.player:hover {
+    opacity: 0.5;
+    color: green;
     transition: color 0.5s ease-in-out, opacity 0.5s ease-in-out;
 }
 
@@ -36,4 +50,8 @@
     background-color: #a3152d;
     opacity: 0.90;
     transition: color 2s ease-in-out, background-color 0.15s ease-in-out, opacity 0.35s ease-in-out;
+}
+
+.hidden {
+    display: none !important;
 }
