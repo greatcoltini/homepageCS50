@@ -4,7 +4,7 @@ var morebasicregion = "americas";
 // define an array of champion name, id
 var champions = [];
 
-var winLoss = 0;
+var match_won_int = 0;
 
 var won_matches = [];
 
@@ -261,13 +261,13 @@ function populateSummonerDisplay(){
      let wins = document.createElement("div");
      wins.classList.add("progress-bar");
      wins.ariaValueMin = 0;
-     wins.ariaValueMax = winLoss;
+     wins.ariaValueMax = match_won_int;
      wins.id = "wins";
 
      let losses = document.createElement("div");
      losses.classList.add("progress-bar");
-     losses.ariaValueMin = winLoss;
-     losses.ariaValueMax = 100;
+     losses.ariaValueMin = match_won_int;
+     losses.ariaValueMax = match_loss_int + match_won_int;
      losses.classList.add("bg-danger");
      losses.id = "losses";
 
@@ -298,7 +298,8 @@ function eliminateExistingMatches(){
     while (parent.firstChild){
         parent.removeChild(parent.firstChild);
     }
-    winLoss = 0;
+    match_won_int = 0;
+    match_loss_int = 0;
     return 0;
 }
 
@@ -368,7 +369,7 @@ function populateSingleMatch(matchNumber){
         div_row.classList.add("bg-primary");
         strong_text.innerHTML += " - VICTORY";
         div_row.classList.add("match_won");
-        winLoss = winLoss + 1;
+        match_won_int = match_won_int + 1;
         won_matches.push(currMatch.champPlayed);
         document.getElementById("wonCol").append(img2, kda_small);
     }
@@ -377,6 +378,7 @@ function populateSingleMatch(matchNumber){
         strong_text.innerHTML += " - DEFEAT";
         div_row.classList.add("match_lost");
         lost_matches.push(currMatch.champPlayed);
+        match_loss_int = match_loss_int + 1;
         document.getElementById("lCol").append(img2, kda_small);
     }
 
@@ -421,14 +423,14 @@ function populateSingleMatch(matchNumber){
     div_row.onclick = function() {changeState(this)};
 
     let wins = document.getElementById("wins");
-    wins.ariaValueNow = winLoss;
-    wins.style.width = String(winLoss * 100 / 20) + "%";
-    wins.innerHTML = winLoss + " wins out of 20.";
+    wins.ariaValueNow = match_won_int;
+    wins.style.width = String(match_won_int * 100 / match_won_int + match_loss_int) + "%";
+    wins.innerHTML = match_won_int + " wins out of " + (match_won_int + match_loss_int);
 
     let losses = document.getElementById("losses");
-    losses.ariaValueNow = (100 - winLoss);
-    losses.style.width = String(100 - winLoss / 20) + "%";
-    losses.innerHTML = (20 - winLoss) + " losses out of 20.";
+    losses.ariaValueNow = (100 - match_won_int);
+    losses.style.width = String(match_loss_int * 100 / match_won_int + match_loss_int) + "%";
+    losses.innerHTML = (match_loss_int) + " losses out of " + (match_won_int + match_loss_int);
 
     // champ row function
 
