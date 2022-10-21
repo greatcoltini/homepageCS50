@@ -6,6 +6,10 @@ var champions = [];
 
 var winLoss = 0;
 
+var won_matches = [];
+
+var lost_matches = [];
+
 // define structure for a summoner object
 function summoner()
 {
@@ -215,6 +219,7 @@ async function search_for_summoner(name){
     await pullSummonerID(player);
     await pullMatchHistory(player);
     populateSummonerDisplay();
+    initializeSummary();
     for (let i = 0; i < matchHistory20.length; i++)
     {
         await pullIndividualMatch(matchHistory20[i]);
@@ -224,11 +229,31 @@ async function search_for_summoner(name){
     }
 }
 
+// initializes the champion row
+function initializeSummary(){
+    let champRow = document.createElement("div");
+    champRow.id = "champRow";
+    champRow.classList.add("row");
+    document.getElementById("display_main").append(champRow);
+
+    let wonCol = document.createElement("div");
+    wonCol.id = "wonCol";
+    wonCol.classList.add("col");
+
+
+    let lCol = document.createElement("div");
+    lCol.id = "lCol";
+    lCol.classList.add("col");
+
+    champRow.append(wonCol, lCol);
+}
+
 function populateSummonerDisplay(){
      let display_main = document.createElement("div");
      display_main.classList.add("row", "g-0", "border", "rounded",
                             "overflow-hidden", "flex-md-row", "mb-2", "shadow-sm",
                              "h-md-300", "position-relative");
+     display_main.id = "display_main";
 
      let win_bar = document.createElement("div");
      win_bar.classList.add("progress");
@@ -324,16 +349,35 @@ function populateSingleMatch(matchNumber){
     let q_hr = document.createElement('hr');
     let r_hr = document.createElement('hr');
 
+    let championRow = document.getElementById("champRow");
+
+
+    var img = document.createElement("img");
+    img.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+currMatch.champPlayed+".png";
+    img.classList.add("char");
+    div_col_middle.appendChild(img);
+
+    var img2 = img;
+
+    img2.classList.add("sChar");
+
+    let kda_small = document.createElement("p");
+    kda_small.innerHTML = "K/D/A : " + currMatch.kills + "/" + currMatch.deaths + "/" + currMatch.assists;
+
     if (currMatch.victory){
         div_row.classList.add("bg-primary");
         strong_text.innerHTML += " - VICTORY";
         div_row.classList.add("match_won");
         winLoss = winLoss + 1;
+        won_matches.push(currMatch.champPlayed);
+        document.getElementById("wonCol").append(img2, kda_small);
     }
     else {
         div_row.classList.add("bg-danger");
         strong_text.innerHTML += " - DEFEAT";
         div_row.classList.add("match_lost");
+        lost_matches.push(currMatch.champPlayed);
+        document.getElementById("lCol").append(img2, kda_small);
     }
 
     if (currMatch.queueId == 420){
@@ -372,10 +416,7 @@ function populateSingleMatch(matchNumber){
     div_row.append(header_section, q_hr, div_col_inner, div_col_middle, div_col_teams);
     div_col_inner.append(kda_text, champ_played, side_text);
 
-    var img = document.createElement("img");
-    img.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+currMatch.champPlayed+".png";
-    img.classList.add("char");
-    div_col_middle.appendChild(img);
+
 
     div_row.onclick = function() {changeState(this)};
 
@@ -388,4 +429,24 @@ function populateSingleMatch(matchNumber){
     losses.ariaValueNow = (100 - winLoss);
     losses.style.width = String(100 - winLoss / 20) + "%";
     losses.innerHTML = (20 - winLoss) + " losses out of 20.";
+
+    // champ row function
+
+}
+
+
+function matches_played_champions_icons(){
+    // display champions under each progress bar
+     for (let i = 0; i < won_matches.length; i++){
+         var img = document.createElement("img");
+            img.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+won_matches[i]+".png";
+            img.classList.add("char");
+            champRow.appendChild(img);
+     }
+     for (let i = 0; i < lost_matches.length; i ++){
+         var img = document.createElement("img");
+            img.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+lost_matches[i]+".png";
+            img.classList.add("char");
+            champRow.appendChild(img);
+     }
 }

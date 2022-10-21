@@ -5,6 +5,12 @@
     justify-content: center;
 }
 
+.sChar {
+    width: 2vw;
+    height: 2vw;
+    display: flex;
+}
+
 .c_ico{
     width: 1.5vw;
     height: 1.5vw;
