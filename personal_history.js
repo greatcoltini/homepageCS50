@@ -398,7 +398,9 @@ function populateSingleMatch(matchNumber){
     img.classList.add("char");
     div_col_middle.appendChild(img);
 
-    var img2 = img;
+    var img2 = document.createElement("img");
+    img2.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+currMatch.champPlayed+".png";
+    img2.classList.add("char");
     img2.onclick = function() {onclickScroll("match" + matchNumber)};
 
     if (currMatch.victory){
