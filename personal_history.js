@@ -214,6 +214,7 @@ function generate_summoner_container(s, team_side){
 async function search_for_summoner(name){
 
     document.getElementById("summoner_name").value = name;
+    document.getElementById("sidebar").classList.remove("hidden");
 
     await eliminateExistingMatches();
     player.name = name;
@@ -363,7 +364,6 @@ function populateSingleMatch(matchNumber){
     div_col_outer.classList.add("col-md-6");
     div_col_outer.classList.add("summoner_container");
     div_col_outer.id = "match" + matchNumber;
-
 
     let div_row = document.createElement("div");
     div_row.classList.add("row", "g-0", "border", "rounded",
