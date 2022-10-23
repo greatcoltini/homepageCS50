@@ -5,10 +5,9 @@ var morebasicregion = "americas";
 var champions = [];
 
 var match_won_int = 0;
-
 var won_matches = [];
-
 var lost_matches = [];
+var champs_played_dict = {};
 
 // define structure for a summoner object
 function summoner()
@@ -213,13 +212,16 @@ function generate_summoner_container(s, team_side){
 
 // function for searching for summoner
 async function search_for_summoner(name){
+
     document.getElementById("summoner_name").value = name;
+
     await eliminateExistingMatches();
     player.name = name;
     await pullSummonerID(player);
     await pullMatchHistory(player);
     populateSummonerDisplay();
     initializeSummary();
+
     for (let i = 0; i < matchHistory20.length; i++)
     {
         await pullIndividualMatch(matchHistory20[i]);
@@ -227,36 +229,61 @@ async function search_for_summoner(name){
             populateSingleMatch(i);
         }
     }
+
 }
 
 // initializes the champion row
 function initializeSummary(){
+
     let champRow = document.createElement("div");
     champRow.id = "champRow";
-    champRow.classList.add("row");
+    champRow.classList.add("row", "wonCol");
     document.getElementById("display_main").append(champRow);
 
     let wonCol = document.createElement("div");
     wonCol.id = "wonCol";
-    wonCol.classList.add("col");
+    wonCol.classList.add("col", "p-3", "m-1");
+    wonCol.classList.add("rounded");
+
+    let individualWinRow = document.createElement("div");
+    individualWinRow.id = "iWinRow";
+    individualWinRow.classList.add("flex");
+    individualWinRow.classList.add("bg-primary");
+
+    wonCol.append(individualWinRow);
 
 
     let lCol = document.createElement("div");
     lCol.id = "lCol";
-    lCol.classList.add("col");
+    lCol.classList.add("col", "rounded");
+    lCol.classList.add("p-3", "m-1");
+    lCol.classList.add("lCol");
+
+    let individualLossRow = document.createElement("div");
+    individualLossRow.id = "iLossRow";
+    individualLossRow.classList.add("flex", "bg-danger", "h-md-300");
+
+    lCol.append(individualLossRow);
 
     champRow.append(wonCol, lCol);
+
+    champRow.classList.add("expanded");
+
 }
 
 function populateSummonerDisplay(){
+
      let display_main = document.createElement("div");
      display_main.classList.add("row", "g-0", "border", "rounded",
                             "overflow-hidden", "flex-md-row", "mb-2", "shadow-sm",
                              "h-md-300", "position-relative");
      display_main.id = "display_main";
 
+     display_main.onclick = function() {changeState(this)};
+
      let win_bar = document.createElement("div");
      win_bar.classList.add("progress");
+     win_bar.classList.add("summoner_container");
 
      let wins = document.createElement("div");
      wins.classList.add("progress-bar");
@@ -276,6 +303,7 @@ function populateSummonerDisplay(){
 
      display_main.append(win_bar);
 
+
      document.getElementById("matchhistory").append(display_main);
 }
 
@@ -294,28 +322,37 @@ function keySearch(){
 
 // refreshes match history
 function eliminateExistingMatches(){
+
     parent = document.getElementById("matchhistory");
     while (parent.firstChild){
         parent.removeChild(parent.firstChild);
     }
     match_won_int = 0;
     match_loss_int = 0;
+
     return 0;
 }
 
 // change state function
-function changeState(div_row){
-    var nodes = div_row.getElementsByClassName("expanded");
+function changeState(selected_container){
+    var nodes = selected_container.getElementsByClassName("expanded");
     for(var i=0; i<nodes.length; i++) {
         if(nodes[i].classList.contains("hidden")){
             nodes[i].classList.remove("hidden");
-            div_row.classList.remove("h-md-300");
+            selected_container.classList.remove("h-md-300");
         }
         else {
+
+            selected_container.classList.add("h-md-300");
             nodes[i].classList.add("hidden");
-            div_row.classList.add("h-md-300");
         }
     }
+}
+
+// scrolls window to target on click
+function onclickScroll(matchIdentifier){
+    var target = document.getElementById(matchIdentifier);
+    target.scrollIntoView();
 }
 
 // function to populate matches into feed
@@ -324,6 +361,9 @@ function populateSingleMatch(matchNumber){
 
     let div_col_outer = document.createElement("mc_container");
     div_col_outer.classList.add("col-md-6");
+    div_col_outer.classList.add("summoner_container");
+    div_col_outer.id = "match" + matchNumber;
+
 
     let div_row = document.createElement("div");
     div_row.classList.add("row", "g-0", "border", "rounded",
@@ -359,27 +399,25 @@ function populateSingleMatch(matchNumber){
     div_col_middle.appendChild(img);
 
     var img2 = img;
-
-    img2.classList.add("sChar");
-
-    let kda_small = document.createElement("p");
-    kda_small.innerHTML = "K/D/A : " + currMatch.kills + "/" + currMatch.deaths + "/" + currMatch.assists;
+    img2.onclick = function() {onclickScroll("match" + matchNumber)};
 
     if (currMatch.victory){
+        img2.classList.add("wChar");
         div_row.classList.add("bg-primary");
         strong_text.innerHTML += " - VICTORY";
         div_row.classList.add("match_won");
         match_won_int = match_won_int + 1;
         won_matches.push(currMatch.champPlayed);
-        document.getElementById("wonCol").append(img2, kda_small);
+        document.getElementById("iWinRow").append(img2);
     }
     else {
+        img2.classList.add("lChar");
         div_row.classList.add("bg-danger");
         strong_text.innerHTML += " - DEFEAT";
         div_row.classList.add("match_lost");
         lost_matches.push(currMatch.champPlayed);
         match_loss_int = match_loss_int + 1;
-        document.getElementById("lCol").append(img2, kda_small);
+        document.getElementById("iLossRow").append(img2);
     }
 
     if (currMatch.queueId == 420){
@@ -432,23 +470,5 @@ function populateSingleMatch(matchNumber){
     losses.style.width = String(match_loss_int * 100 / match_won_int + match_loss_int) + "%";
     losses.innerHTML = (match_loss_int) + " losses out of " + (match_won_int + match_loss_int);
 
-    // champ row function
 
-}
-
-
-function matches_played_champions_icons(){
-    // display champions under each progress bar
-     for (let i = 0; i < won_matches.length; i++){
-         var img = document.createElement("img");
-            img.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+won_matches[i]+".png";
-            img.classList.add("char");
-            champRow.appendChild(img);
-     }
-     for (let i = 0; i < lost_matches.length; i ++){
-         var img = document.createElement("img");
-            img.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+lost_matches[i]+".png";
-            img.classList.add("char");
-            champRow.appendChild(img);
-     }
 }

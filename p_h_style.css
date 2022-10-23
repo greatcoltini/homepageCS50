@@ -5,10 +5,24 @@
     justify-content: center;
 }
 
-.sChar {
+.wChar {
     width: 2vw;
     height: 2vw;
+    padding: 0.25vw;
     display: flex;
+    float: left;
+}
+
+.lChar {
+    width: 2vw;
+    height: 2vw;
+    padding: 0.25vw;
+    display: flex;
+    float: right;
+}
+
+.colText {
+    float: center;
 }
 
 .c_ico{
@@ -36,6 +50,18 @@
     opacity: 0.5;
     color: green;
     transition: color 0.5s ease-in-out, opacity 0.5s ease-in-out;
+}
+
+.wonCol {
+    width: 100%;
+    display: flex;
+    float: center;
+}
+
+.lCol {
+    display: flex
+    float: left;
+    width: 100%;
 }
 
 .match_won {
