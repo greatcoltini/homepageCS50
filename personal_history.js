@@ -352,7 +352,7 @@ function changeState(selected_container){
 // scrolls window to target on click
 function onclickScroll(matchIdentifier){
     var target = document.getElementById(matchIdentifier);
-    target.scrollIntoView();
+    target.scrollIntoView({block: "end"});
 }
 
 // function to populate matches into feed
@@ -402,16 +402,17 @@ function populateSingleMatch(matchNumber){
     img2.onclick = function() {onclickScroll("match" + matchNumber)};
 
     if (currMatch.victory){
-        img2.classList.add("wChar");
+        img2.classList.add("wChar", "blue_team");
         div_row.classList.add("bg-primary");
         strong_text.innerHTML += " - VICTORY";
         div_row.classList.add("match_won");
+        div_row.style.border
         match_won_int = match_won_int + 1;
         won_matches.push(currMatch.champPlayed);
         document.getElementById("iWinRow").append(img2);
     }
     else {
-        img2.classList.add("lChar");
+        img2.classList.add("lChar", "red_team");
         div_row.classList.add("bg-danger");
         strong_text.innerHTML += " - DEFEAT";
         div_row.classList.add("match_lost");

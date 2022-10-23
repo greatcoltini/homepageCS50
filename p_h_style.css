@@ -66,6 +66,8 @@
 
 .match_won {
     padding: 0.5rem 2rem 1rem 2rem;
+
+    border-style: solid;
 }
 
 .match_won:hover {
