@@ -214,7 +214,7 @@ function generate_summoner_container(s, team_side){
 async function search_for_summoner(name){
 
     document.getElementById("summoner_name").value = name;
-    document.getElementById("sidebar").classList.remove("hidden");
+
 
     await eliminateExistingMatches();
     player.name = name;
@@ -222,6 +222,7 @@ async function search_for_summoner(name){
     await pullMatchHistory(player);
     populateSummonerDisplay();
     initializeSummary();
+    initializeSticky();
 
     for (let i = 0; i < matchHistory20.length; i++)
     {
@@ -231,6 +232,13 @@ async function search_for_summoner(name){
         }
     }
 
+
+}
+
+// initializes the sidebar
+function initializeSticky(){
+    document.getElementById("sidebar").classList.remove("hidden");
+    document.getElementById("sb_sn").innerHTML = player.name;
 }
 
 // initializes the champion row
