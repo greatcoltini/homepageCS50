@@ -89,3 +89,14 @@
 .hidden {
     display: none !important;
 }
+
+.wins {
+    color: blue;
+    float: left;
+}
+
+.losses {
+    font-color: red;
+    color: red;
+    float: right;
+}

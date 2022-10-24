@@ -17,7 +17,13 @@ function summoner()
     this.summonerID = "";
     this.rank = 0;
     this.top5 = [];
-    this.lp = 0;
+
+    // ranked related info
+    this.tier = "";
+    this.rank = "";
+    this.leaguePoints = 0;
+    this.totalWins = 0;
+    this.totalLosses = 0;
 }
 
 // define structure for player in the match
@@ -48,11 +54,6 @@ function match()
     this.blue_team = [];
 }
 
-// Function returns a random integer between min and max inclusive
-function getRndInteger(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
 // variables for match information
 var matchHistory20 = [];
 var red_team = [];
@@ -66,6 +67,24 @@ function pullSummonerID(user){
         .then(result=>{
             user.summonerID = result.id;
             user.puuid = result.puuid;
+        })
+        .catch(error=>alert(error))
+}
+
+// Function to pull individual player's stats
+function pullPlayerStats(user){
+    return fetch("https://"+region+".api.riotgames.com/lol/league/v4/entries/by-summoner/"+user.summonerID+"?api_key="+api_key_imp.key)
+        .then(data=>{return data.json()})
+        .then(result=>{
+            for (let i = 0; i < result.length; i++){
+                if (result[i].queueType == "RANKED_SOLO_5x5"){
+                    user.tier = result[i].tier;
+                    user.rank = result[i].rank;
+                    user.leaguePoints = result[i].leaguePoints;
+                    user.totalWins = result[i].wins;
+                    user.totalLosses = result[i].losses;
+                }
+            }
         })
         .catch(error=>alert(error))
 }
@@ -220,6 +239,7 @@ async function search_for_summoner(name){
     player.name = name;
     await pullSummonerID(player);
     await pullMatchHistory(player);
+    await pullPlayerStats(player);
     populateSummonerDisplay();
     initializeSummary();
     initializeSticky();
@@ -232,13 +252,15 @@ async function search_for_summoner(name){
         }
     }
 
-
 }
 
 // initializes the sidebar
 function initializeSticky(){
     document.getElementById("sidebar").classList.remove("hidden");
     document.getElementById("sb_sn").innerHTML = player.name;
+    document.getElementById("sb_rank").innerHTML = player.tier + " : " + player.rank + "   " + player.leaguePoints + "LP";
+    document.getElementById("sb_wins").innerHTML = player.totalWins
+    document.getElementById("sb_losses").innerHTML = player.totalLosses;
 }
 
 // initializes the champion row
@@ -260,7 +282,6 @@ function initializeSummary(){
     individualWinRow.classList.add("bg-primary");
 
     wonCol.append(individualWinRow);
-
 
     let lCol = document.createElement("div");
     lCol.id = "lCol";
@@ -311,7 +332,6 @@ function populateSummonerDisplay(){
      win_bar.append(losses);
 
      display_main.append(win_bar);
-
 
      document.getElementById("matchhistory").append(display_main);
 }
@@ -400,7 +420,6 @@ function populateSingleMatch(matchNumber){
 
     let championRow = document.getElementById("champRow");
 
-
     var img = document.createElement("img");
     img.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+currMatch.champPlayed+".png";
     img.classList.add("char");
@@ -467,8 +486,6 @@ function populateSingleMatch(matchNumber){
     div_row.append(header_section, q_hr, div_col_inner, div_col_middle, div_col_teams);
     div_col_inner.append(kda_text, champ_played, side_text);
 
-
-
     div_row.onclick = function() {changeState(this)};
 
     let wins = document.getElementById("wins");
@@ -480,6 +497,5 @@ function populateSingleMatch(matchNumber){
     losses.ariaValueNow = (100 - match_won_int);
     losses.style.width = String(match_loss_int * 100 / match_won_int + match_loss_int) + "%";
     losses.innerHTML = (match_loss_int) + " losses out of " + (match_won_int + match_loss_int);
-
 
 }
