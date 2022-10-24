@@ -265,6 +265,11 @@ function initializeSticky(){
     document.getElementById("sb_rank").innerHTML = player.tier + " : " + player.rank + "   " + player.leaguePoints + "LP";
     document.getElementById("sb_wins").innerHTML = player.totalWins
     document.getElementById("sb_losses").innerHTML = player.totalLosses;
+
+    var winrate = player.totalWins / (player.totalLosses + player.totalWins);
+    var percent_winrate = winrate * 100;
+
+    document.getElementById("sb_wr").innerHTML = "<br>" + parseInt(percent_winrate) +"% Winrate";
 }
 
 // initializes the champion row
@@ -355,7 +360,6 @@ function keySearch(){
 
 // refreshes match history
 function eliminateExistingMatches(){
-
     parent = document.getElementById("matchhistory");
     while (parent.firstChild){
         parent.removeChild(parent.firstChild);

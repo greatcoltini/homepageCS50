@@ -100,3 +100,8 @@
     color: red;
     float: right;
 }
+
+.winrate {
+    font-color: black;
+    float: center;
+}
