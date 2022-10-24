@@ -232,6 +232,8 @@ function generate_summoner_container(s, team_side){
 // function for searching for summoner
 async function search_for_summoner(name){
 
+    await haltSearches();
+
     document.getElementById("summoner_name").value = name;
 
 
@@ -251,6 +253,8 @@ async function search_for_summoner(name){
             populateSingleMatch(i);
         }
     }
+
+    await haltSearches();
 
 }
 
@@ -376,6 +380,20 @@ function changeState(selected_container){
             nodes[i].classList.add("hidden");
         }
     }
+}
+
+// function stops a search while another search is ongoing
+function haltSearches(){
+    var nodes = document.getElementsByClassName("searchCommands");
+    for (let i=0; i < nodes.length; i++){
+        if(nodes[i].classList.contains("disabled")){
+            nodes[i].classList.remove("disabled");
+        }
+        else {
+            nodes[i].classList.add("disabled");
+        }
+    }
+    return 0;
 }
 
 // scrolls window to target on click
