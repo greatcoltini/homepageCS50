@@ -105,3 +105,9 @@
     font-color: black;
     float: center;
 }
+
+.rank_img {
+    width: 5vw;
+    height: 5vw;
+    float: left;
+}
