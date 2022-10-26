@@ -7,6 +7,15 @@ var url ="https://"+region+".api.riotgames.com/lol/league-exp/v4/entries/RANKED_
 // define an array of champion name, id
 var champions = [];
 
+// mapping for summoner to js
+var summoner_mapping = {
+    1 : topFiveRankOne,
+    2 : topFiveRankTwo,
+    3 : topFiveRankThree,
+    4 : topFiveRankFour,
+    5 : topFiveRankFive
+}
+
 // populating var
 var populating = true;
 
@@ -31,38 +40,47 @@ function createListSummoners() {
 // define function to pull top 10 ranked challenger players via api, allocate them to list of summoners
 // grabs summoner and rank from challenger list
 async function pullSummonerData() {
+    alert(url);
     return fetch(url)
         .then(data=>{return data.json()})
         .then(res=>{
-            for (let i = 0; i < 10; i++)
-            {
-                summoners[i].name = res[i].summonerName;
-                summoners[i].rank = i + 1;
-                summoners[i].lp = res[i].leaguePoints;
-            }})
-        .catch(error=>console.log(error))
+            writeTopTen(res, 10);
+            })
+        .catch(error=>{
+            console.log(error)
+            writeTopTen(topTenChall, 5);
+        })
 }
 
-// Function to pull summoner id from API
-async function pullSummonerID(summoner){
-    return fetch("https://"+region+".api.riotgames.com/lol/summoner/v4/summoners/by-name/"+summoner.name+"?api_key="+api_key_imp.key)
-        .then(summdata=>{return summdata.json()})
-        .then(result=>{
-            summoner.summonerID = result.id;
-        })
-        .catch(error=>console.log(error))
+// writes out top _ number of challenger players
+function writeTopTen(topTenList, count){
+    for (let i = 0; i < count; i ++){
+        summoners[i].name = topTenList[i].summonerName;
+        summoners[i].rank = i + 1;
+        summoners[i].lp = topTenList[i].leaguePoints;
+        summoners[i].summonerID = topTenList[i].summonerId;
+    }
 }
 
 // takes in a summoner object, and adds their top 5 most played champions
 async function pullTopChamps(summoner){
+    alert("https://"+region+".api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/"+summoner.summonerID+"/top?count=5&api_key="+api_key_imp.key);
     return fetch("https://"+region+".api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/"+summoner.summonerID+"/top?count=5&api_key="+api_key_imp.key)
         .then(data=>{return data.json()})
         .then(res=>{
-            for (let i = 0; i < 5; i++){
-                summoner.top5[i] = res[i].championId;
-            }
+            writeTopFiveChamps(summoner, res);
         })
-        .catch(error=>console.log(error))
+        .catch(error=>{
+            console.log(error)
+            writeTopFiveChamps(summoner, summoner_mapping[summoner.rank]);
+        })
+}
+
+// writes the top five champions to the summoner object
+function writeTopFiveChamps(summoner, tfcl){
+    for (let i =0; i < 5; i++){
+        summoner.top5[i] = tfcl[i].championId;
+    }
 }
 
 // import champions.json
@@ -185,7 +203,6 @@ async function startup() {
     await pullSummonerData();
     document.getElementById("titletext").innerHTML = "TOP 10 LEAGUE OF LEGENDS PLAYERS - " + regions[region];
     for (let i = 0; i < summoners.length; i++){
-        await pullSummonerID(summoners[i]);
         await pullTopChamps(summoners[i]);
         // at this point we have list of champion ids;
         // sort through the champions.json and return each

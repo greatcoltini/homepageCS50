@@ -1,0 +1,43 @@
+link to summoner id:
+https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/zayd gets laid?api_key=RGAPI-50a81855-8f02-445b-a01a-94aee748df0a
+
+link to matches:
+https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/6s-nwcdrYY2ScNYR_kNCMLfLoGLb7kTUN9vGCDPkSRgzC-nPDNYyz2eahe1195b2vfs_CcWFTEZb9Q/ids?start=0&count=20&api_key=RGAPI-50a81855-8f02-445b-a01a-94aee748df0a
+
+link to summoner info
+https://na1.api.riotgames.com/lol/league/v4/entries/by-summoner/5xmWTxTQ2dQG4Ht8do4oh_K99wXvz2dJ9zhHzfwGCsTi0cY?api_key=RGAPI-50a81855-8f02-445b-a01a-94aee748df0a
+
+
+link to m1:
+https://americas.api.riotgames.com/lol/match/v5/matches/NA1_4474515321?api_key=RGAPI-50a81855-8f02-445b-a01a-94aee748df0a
+
+
+
+RANKING STUFF:
+
+top 10 chall:
+https://na1.api.riotgames.com/lol/league-exp/v4/entries/RANKED_SOLO_5x5/CHALLENGER/I?page=1&api_key=RGAPI-50a81855-8f02-445b-a01a-94aee748df0a
+
+
+rnk 1:
+https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/PwVx Hc9999na?api_key=RGAPI-50a81855-8f02-445b-a01a-94aee748df0a
+
+rnk1 mastery:
+https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/tfn51gHSSlu1vKuyAlUWftvdMzURaYgAHclTRQokIfhmzubKYGi68t3brg/top?count=5&api_key=RGAPI-50a81855-8f02-445b-a01a-94aee748df0a
+
+rnk 2:
+https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/c2 meteos?api_key=RGAPI-50a81855-8f02-445b-a01a-94aee748df0a
+https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/xyjcIH8cPzuRnlQWXZr9RypKikal43lpr9avA5XxZRwksSA/top?count=5&api_key=RGAPI-50a81855-8f02-445b-a01a-94aee748df0a
+
+rnk 3:
+https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/MU APA?api_key=RGAPI-50a81855-8f02-445b-a01a-94aee748df0a
+https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/aq3KZFZs2-e-mKSci8Yj5c6wGXuzkITBp_IRgEp-CKuA6FTFEI3WMJPnkg/top?count=5&api_key=RGAPI-50a81855-8f02-445b-a01a-94aee748df0a
+
+rnk 4:
+https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/WX Arendel?api_key=RGAPI-50a81855-8f02-445b-a01a-94aee748df0a
+https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/sOTSX0491tN8ElerfIeLn33JUgQnt6kTA8Qj7VM3xYU8dOg/top?count=5&api_key=RGAPI-50a81855-8f02-445b-a01a-94aee748df0a
+
+
+rnk 5:
+https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/winnie poohbear?api_key=RGAPI-50a81855-8f02-445b-a01a-94aee748df0a
+https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/yttl7_-xbnZiesak-KWp2E3uGG9OtrHeUjxFuETZwMFtDGE/top?count=5&api_key=RGAPI-50a81855-8f02-445b-a01a-94aee748df0a
