@@ -1,0 +1,1 @@
+var summonerInfoTemplate = {"id":"5xmWTxTQ2dQG4Ht8do4oh_K99wXvz2dJ9zhHzfwGCsTi0cY","accountId":"VRa78kotecbvO_rPdWhg5GNLjjgC9zC11IQm1bEq3310ZlQ","puuid":"6s-nwcdrYY2ScNYR_kNCMLfLoGLb7kTUN9vGCDPkSRgzC-nPDNYyz2eahe1195b2vfs_CcWFTEZb9Q","name":"zayd gets laid","profileIconId":4561,"revisionDate":1666492100000,"summonerLevel":559}

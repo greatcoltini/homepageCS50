@@ -111,3 +111,8 @@
     height: 5vw;
     float: left;
 }
+
+.item_img {
+    width: 1vw;
+    height: 1vw;
+}
