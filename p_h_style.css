@@ -5,6 +5,12 @@
     justify-content: center;
 }
 
+.mChar {
+    width: 3vw;
+    height: 3vw;
+    float: left;
+}
+
 .wChar {
     width: 2vw;
     height: 2vw;

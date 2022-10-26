@@ -7,7 +7,6 @@ var champions = [];
 var match_won_int = 0;
 var won_matches = [];
 var lost_matches = [];
-var champs_played_dict = {};
 
 //template variables
 var match_template_mapping = {
@@ -31,6 +30,17 @@ function summoner()
     this.leaguePoints = 0;
     this.totalWins = 0;
     this.totalLosses = 0;
+
+    // list of champion objects
+    this.championsPlayed = [];
+}
+
+// define structure for champion played information
+function championPI (){
+    this.name = "";
+    this.games = 0;
+    this.wins = 0;
+    this.losses = 0;
 }
 
 // define structure for player in the match
@@ -160,21 +170,25 @@ function writeIndividualMatch(queriedMatch, matchVar){
     // first find participant == player
     for (let i = 0; i < 10; i++){
         if (queriedMatch.info.participants[i].puuid == player.puuid){
-            matchVar.victory = queriedMatch.info.participants[i].win;
-            matchVar.champPlayed = queriedMatch.info.participants[i].championName;
-            if (queriedMatch.info.participants[i].teamId == 200){
+            // define current summoner
+            let cur_sum = queriedMatch.info.participants[i];
+            matchVar.victory = cur_sum.win;
+            matchVar.champPlayed = cur_sum.championName;
+            if (cur_sum.teamId == 200){
                 matchVar.side = "Red";
             }
             else {
                 matchVar.side = "Blue";
             }
-            matchVar.kills = queriedMatch.info.participants[i].kills;
-            matchVar.assists = queriedMatch.info.participants[i].assists;
-            matchVar.deaths = queriedMatch.info.participants[i].deaths;
+            matchVar.kills = cur_sum.kills;
+            matchVar.assists = cur_sum.assists;
+            matchVar.deaths = cur_sum.deaths;
 //                    for (let j = 0; j < 6; j++){
 //                        var item_num = "item" + j;
 //                        match.items.push(result.info.participants[i].item_num);
 //                    }
+            // use match info to add to player champion list
+            player_champion_update(cur_sum, player);
         }
 
         if (queriedMatch.info.participants[i].teamId == 200) {
@@ -187,7 +201,33 @@ function writeIndividualMatch(queriedMatch, matchVar){
 
     matchVar.queueId = queriedMatch.info.queueId;
     matchVar.fetched = true;
+}
 
+// function to take in a specific match, and update player champion list based on it
+function player_champion_update(current_game, player){
+    var j = player.championsPlayed.findIndex(e => e.name === current_game.championName);
+    if (j > -1) {
+      /* championsPlayed contains the element we're looking for, at index "j" */
+        player.championsPlayed[j].games++;
+        if (current_game.win){
+            player.championsPlayed[j].wins++;
+        }
+        else {
+            player.championsPlayed[j].losses++;
+        }
+    }
+    else {
+        current_champ = new championPI();
+        current_champ.name = current_game.championName;
+        current_champ.games++;
+        if (current_game.win){
+            current_champ.wins++;
+        }
+        else {
+            current_champ.losses++;
+        }
+        player.championsPlayed.push(current_champ);
+    }
 }
 
 // takes in a match participant, a summoner object, and a team, and fills the team with the summoner
@@ -311,8 +351,30 @@ async function search_for_summoner(name){
         }
     }
 
+    populateChampList();
+
     await haltSearches();
 
+}
+
+// populates the champion list
+function populateChampList(){
+    var champ_list = document.getElementById("champlist");
+
+    for (let i = 0; i < player.championsPlayed.length; i++){
+        let champ_creation = document.createElement("li");
+        let champ_text = document.createElement("p");
+        let champ_ico = document.createElement("img");
+        champ_ico.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+player.championsPlayed[i].name+".png";
+        champ_ico.classList.add("wChar");
+        champ_text.classList.add("text-primary");
+        champ_text.innerHTML = player.championsPlayed[i].name + ": " + player.championsPlayed[i].wins + "/"
+            + player.championsPlayed[i].losses;
+
+        champ_creation.append(champ_ico, champ_text);
+
+        champ_list.appendChild(champ_creation);
+    }
 }
 
 // initializes the sidebar

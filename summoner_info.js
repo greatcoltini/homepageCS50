@@ -40,7 +40,6 @@ function createListSummoners() {
 // define function to pull top 10 ranked challenger players via api, allocate them to list of summoners
 // grabs summoner and rank from challenger list
 async function pullSummonerData() {
-    alert(url);
     return fetch(url)
         .then(data=>{return data.json()})
         .then(res=>{
@@ -64,7 +63,6 @@ function writeTopTen(topTenList, count){
 
 // takes in a summoner object, and adds their top 5 most played champions
 async function pullTopChamps(summoner){
-    alert("https://"+region+".api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/"+summoner.summonerID+"/top?count=5&api_key="+api_key_imp.key);
     return fetch("https://"+region+".api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/"+summoner.summonerID+"/top?count=5&api_key="+api_key_imp.key)
         .then(data=>{return data.json()})
         .then(res=>{
