@@ -480,16 +480,22 @@ function keySearch(){
 
 // refreshes match history
 function eliminateExistingMatches(){
-    parent = document.getElementById("matchhistory");
-    while (parent.firstChild){
-        parent.removeChild(parent.firstChild);
-    }
+    removeAllChildren(document.getElementById("champlist"));
+    remvoeAllChildren(document.getElementById("matchhistory"));
+
     matchHistory20 = [];
     player = new summoner();
     match_won_int = 0;
     match_loss_int = 0;
 
     return 0;
+}
+
+// removes all children of target element
+function removeAllChildren(target){
+    while (target.firstChild){
+        target.removeChild(target.firstChild);
+    }
 }
 
 // change state function
