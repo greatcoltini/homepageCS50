@@ -180,20 +180,14 @@ function writeIndividualMatch(queriedMatch, matchVar){
             matchVar.assists = cur_sum.assists;
             matchVar.deaths = cur_sum.deaths;
 
+            // generates list of items for the summoner
             Object.keys(cur_sum).forEach(e => {
               if (e.startsWith('item') && !e.includes("Purchased"))
-                                    {
-                                        matchVar.items.push(cur_sum[e]);
-                                        alert(matchVar.items);
-                                    }
+                    {
+                        matchVar.items.push(cur_sum[e]);
+                    }
               else {}
             })
-//            for (let j = 0; j < 7; j++){
-//                var item_num = "item" + j;
-//                alert(item_num);
-//                matchVar.items.push(cur_sum + ".item" + j);
-//                alert(matchVar.items);
-//            }
             // use match info to add to player champion list
             player_champion_update(cur_sum, player);
         }
@@ -582,7 +576,7 @@ function populateSingleMatch(matchNumber){
     img.classList.add("char");
     div_col_middle.appendChild(img);
 
-//    itemGeneration();
+    itemGeneration(currMatch);
 
     var img2 = document.createElement("img");
     img2.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+currMatch.champPlayed+".png";
@@ -659,11 +653,15 @@ function populateSingleMatch(matchNumber){
 
 }
 
-//function itemGeneration(){
-//    for (let i = 0; i < 6; i++){
-//        var img = document.createElement("img");
-//        img.src = "https://ddragon.leagueoflegends.com/cdn/12.20.1/img/item/" + match.items[0] + ".png";
-//        img.classList.add("item_img");
-//
-//    }
-//}
+function itemGeneration(target_match){
+    let itemRow = document.createElement("div");
+    itemRow.classList.add("row");
+
+    for (let i = 0; i < 6; i++){
+        var img = document.createElement("img");
+        img.src = "https://ddragon.leagueoflegends.com/cdn/12.20.1/img/item/" + target_match.items[0] + ".png";
+        img.classList.add("item_img");
+        itemRow.append(img);
+    }
+    div_col_middle.append(itemRow);
+}
