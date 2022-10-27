@@ -4,6 +4,9 @@ var morebasicregion = "americas";
 // define an array of champion name, id
 var champions = [];
 
+// ward id numbers
+var wards = [3340, 3330, 3363, 3364];
+
 var match_won_int = 0;
 var won_matches = [];
 var lost_matches = [];
@@ -660,7 +663,10 @@ function itemGeneration(target_match){
     for (let i = 0; i < target_match.items.length; i++){
         let item_src = document.createElement("img");
         item_src.src = "https://ddragon.leagueoflegends.com/cdn/12.20.1/img/item/" + target_match.items[i] + ".png";
-        item_src.classList.add("wChar");
+        item_src.classList.add("item_img");
+        if (wards.includes(target_match.items[i])){
+            item_src.classList.add("ward_img");
+        }
         itemRow.append(item_src);
     }
 

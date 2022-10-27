@@ -99,8 +99,18 @@
 
 
 .item_img {
-    width: 1vw;
-    height: 1vw;
+    width: 2vw;
+    height: 2vw;
+    padding: 0.10vw;
+    border-style: solid;
+    display: flex;
+    float: left;
+}
+
+.ward_img {
+    border-style: solid;
+    border-radius: 1vw;
+
 }
 
 /* STYLING FOR CHAMPION SIDEBAR */
