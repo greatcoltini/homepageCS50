@@ -5,23 +5,26 @@
     justify-content: center;
 }
 
-.mChar {
-    width: 3vw;
-    height: 3vw;
+
+.sideChar {
+    width: 10%;
+    height: 10%;
+    padding: 0.25vw;
+    display: flex;
     float: left;
 }
 
 .wChar {
-    width: 2vw;
-    height: 2vw;
+    width: 10%;
+    height: 10%;
     padding: 0.25vw;
     display: flex;
     float: left;
 }
 
 .lChar {
-    width: 2vw;
-    height: 2vw;
+    width: 10%;
+    height: 10%;
     padding: 0.25vw;
     display: flex;
     float: right;
@@ -32,8 +35,8 @@
 }
 
 .c_ico{
-    width: 1.5vw;
-    height: 1.5vw;
+    width: 2.5vw;
+    height: 2.5vw;
 }
 
 .summoner_container{
@@ -72,7 +75,6 @@
 
 .match_won {
     padding: 0.5rem 2rem 1rem 2rem;
-
     border-style: solid;
 }
 
@@ -99,9 +101,9 @@
 
 
 .item_img {
-    width: 2vw;
-    height: 2vw;
-    padding: 0.10vw;
+    width: 3vw;
+    height: 3vw;
+    padding: 0.1vw;
     border-style: solid;
     display: flex;
     float: left;
@@ -109,14 +111,14 @@
 
 .ward_img {
     border-style: solid;
-    border-radius: 1vw;
+    border-radius: 20px;
 
 }
 
 /* STYLING FOR CHAMPION SIDEBAR */
 .rank_img {
-    width: 5vw;
-    height: 5vw;
+    width: 25%;
+    height: 25%;
     float: left;
 }
 
@@ -134,5 +136,9 @@
 .winrate {
     font-color: black;
     float: center;
+}
+
+.sidebar_padding {
+    margin-top: 3vw;
 }
 

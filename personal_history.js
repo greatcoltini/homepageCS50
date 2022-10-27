@@ -370,7 +370,7 @@ function populateChampList(){
         let champ_text = document.createElement("p");
         let champ_ico = document.createElement("img");
         champ_ico.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+player.championsPlayed[i].name+".png";
-        champ_ico.classList.add("wChar");
+        champ_ico.classList.add("sideChar");
         champ_text.classList.add("text-primary");
         champ_text.innerHTML = player.championsPlayed[i].name + ": " + player.championsPlayed[i].wins + "/"
             + player.championsPlayed[i].losses;
@@ -638,7 +638,7 @@ function populateSingleMatch(matchNumber){
 
     document.getElementById("matchhistory").append(div_col_outer);
     div_col_outer.append(div_row);
-    div_col_outer.classList.add("container");
+    div_col_outer.classList.add("container-fluid");
     div_row.append(header_section, q_hr, div_col_inner, div_col_middle, div_col_teams);
     div_col_inner.append(kda_text, champ_played, side_text);
 
