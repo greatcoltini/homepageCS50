@@ -7,6 +7,9 @@ var url ="https://"+region+".api.riotgames.com/lol/league-exp/v4/entries/RANKED_
 // define an array of champion name, id
 var champions = [];
 
+// saved innerHTML
+var savedInner = "";
+
 // mapping for summoner to js
 var summoner_mapping = {
     1 : topFiveRankOne,
@@ -196,6 +199,7 @@ function removeAllChildNodes(parent) {
 
 
 async function startup() {
+    stateSwitch();
     url ="https://"+region+".api.riotgames.com/lol/league-exp/v4/entries/RANKED_SOLO_5x5/CHALLENGER/I?page=1&api_key="+api_key_imp.key;
     createListSummoners();
     await pullSummonerData();
@@ -207,6 +211,25 @@ async function startup() {
         await readChampionsJson();
         generateSummonerCSS(i);
     }
+    stateSwitch();
+}
+
+// State switch ... stops glitches
+// function stops a search while another search is ongoing
+function stateSwitch(){
+    var nodes = document.getElementsByClassName("searchCommands");
+    for (let i=0; i < nodes.length; i++){
+        if(nodes[i].classList.contains("disabled")){
+            nodes[i].classList.remove("disabled");
+            nodes[i].innerHTML = savedInner;
+        }
+        else {
+            nodes[i].classList.add("disabled");
+            savedInner = nodes[i].innerHTML;
+            nodes[i].innerHTML = ("Loading...")
+        }
+    }
+    return 0;
 }
 
 
