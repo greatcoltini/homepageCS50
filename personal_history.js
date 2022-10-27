@@ -179,10 +179,21 @@ function writeIndividualMatch(queriedMatch, matchVar){
             matchVar.kills = cur_sum.kills;
             matchVar.assists = cur_sum.assists;
             matchVar.deaths = cur_sum.deaths;
-//                    for (let j = 0; j < 6; j++){
-//                        var item_num = "item" + j;
-//                        match.items.push(result.info.participants[i].item_num);
-//                    }
+
+            Object.keys(cur_sum).forEach(e => {
+              if (e.startsWith('item') && !e.includes("Purchased"))
+                                    {
+                                        matchVar.items.push(cur_sum[e]);
+                                        alert(matchVar.items);
+                                    }
+              else {}
+            })
+//            for (let j = 0; j < 7; j++){
+//                var item_num = "item" + j;
+//                alert(item_num);
+//                matchVar.items.push(cur_sum + ".item" + j);
+//                alert(matchVar.items);
+//            }
             // use match info to add to player champion list
             player_champion_update(cur_sum, player);
         }
