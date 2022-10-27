@@ -182,7 +182,7 @@ function writeIndividualMatch(queriedMatch, matchVar){
 
             // generates list of items for the summoner
             Object.keys(cur_sum).forEach(e => {
-              if (e.startsWith('item') && !e.includes("Purchased"))
+              if (e.startsWith('item') && !e.includes("Purchased") && ! cur_sum[e] == 0)
                     {
                         matchVar.items.push(cur_sum[e]);
                     }
@@ -576,7 +576,7 @@ function populateSingleMatch(matchNumber){
     img.classList.add("char");
     div_col_middle.appendChild(img);
 
-    itemGeneration(currMatch);
+    div_col_middle.appendChild(itemGeneration(currMatch));
 
     var img2 = document.createElement("img");
     img2.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+currMatch.champPlayed+".png";
@@ -657,11 +657,12 @@ function itemGeneration(target_match){
     let itemRow = document.createElement("div");
     itemRow.classList.add("row");
 
-    for (let i = 0; i < 6; i++){
-        var img = document.createElement("img");
-        img.src = "https://ddragon.leagueoflegends.com/cdn/12.20.1/img/item/" + target_match.items[0] + ".png";
-        img.classList.add("item_img");
-        itemRow.append(img);
+    for (let i = 0; i < target_match.items.length; i++){
+        let item_src = document.createElement("img");
+        item_src.src = "https://ddragon.leagueoflegends.com/cdn/12.20.1/img/item/" + target_match.items[i] + ".png";
+        item_src.classList.add("wChar");
+        itemRow.append(item_src);
     }
-    div_col_middle.append(itemRow);
+
+    return itemRow;
 }
