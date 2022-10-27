@@ -81,8 +81,6 @@ var player = new summoner();
 
 // Function to pull summoner id from API
 function pullSummonerID(user){
-//     alert("https://"+region+".api.riotgames.com/lol/summoner/v4/summoners/by-name/"+user.name+"?api_key="+api_key_imp.key);
-
      return fetch("https://"+region+".api.riotgames.com/lol/summoner/v4/summoners/by-name/"+user.name+"?api_key="+api_key_imp.key)
         .then(data=>{return data.json()})
         .then(result=>{
@@ -99,7 +97,6 @@ function pullSummonerID(user){
 
 // Function to pull individual player's stats
 function pullPlayerStats(user){
-//    alert("https://"+region+".api.riotgames.com/lol/league/v4/entries/by-summoner/"+user.summonerID+"?api_key="+api_key_imp.key);
     return fetch("https://"+region+".api.riotgames.com/lol/league/v4/entries/by-summoner/"+user.summonerID+"?api_key="+api_key_imp.key)
         .then(data=>{return data.json()})
         .then(result=>{
@@ -118,7 +115,7 @@ function pullPlayerStats(user){
                     }
                 }
             }
-            )
+        )
 }
 
 // writes user-specific queue data... i.e. soloq
@@ -132,7 +129,6 @@ function writeQueueData(queueName, user){
 
 // Function to pull past 20 matches from summoner from API
 function pullMatchHistory(user){
-//    alert("https://"+morebasicregion+".api.riotgames.com/lol/match/v5/matches/by-puuid/"+user.puuid+"/ids?start=0&count=20&api_key="+api_key_imp.key);
     return fetch("https://"+morebasicregion+".api.riotgames.com/lol/match/v5/matches/by-puuid/"+user.puuid+"/ids?start=0&count=20&api_key="+api_key_imp.key)
         .then(data=>{return data.json()})
         .then(result=>{
@@ -481,7 +477,7 @@ function keySearch(){
 // refreshes match history
 function eliminateExistingMatches(){
     removeAllChildren(document.getElementById("champlist"));
-    remvoeAllChildren(document.getElementById("matchhistory"));
+    removeAllChildren(document.getElementById("matchhistory"));
 
     matchHistory20 = [];
     player = new summoner();
