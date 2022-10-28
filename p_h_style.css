@@ -30,6 +30,11 @@
     float: right;
 }
 
+.summSpell {
+    margin: 0.7vw;
+    border-radius: 25px;
+}
+
 .colText {
     float: center;
 }

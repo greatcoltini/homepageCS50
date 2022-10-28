@@ -18,6 +18,27 @@ var match_template_mapping = {
     "NA1_4473694628" : match3
 }
 
+var summoner_strings = ["summoner1Id", "summoner2Id"];
+
+// summoner spell mapping (for ease)
+var summoner_spell_mapping = {
+    4 : "SummonerFlash",
+    21 : "SummonerBarrier",
+    1 : "SummonerBoost", // cleanse
+    14 : "SummonerDot", // ignite
+    3 : "SummonerExhaust",
+    6 : "SummonerHaste",
+    7 : "SummonerHeal",
+    54 : "Summoner_UltBookPlaceholder",
+    12 : "SummonerTeleport",
+    32 : "SummonerSnowball",
+    39 : "SummonerSnowURFSnowball_Mark",
+    11 : "SummonerSmite",
+    31 : "SummonerPoroThrow",
+    30 : "SummonerPoroRecall",
+    13 : "SummonerMana"
+}
+
 // define structure for a summoner object
 function summoner()
 {
@@ -74,6 +95,8 @@ function match()
     this.red_team = [];
     this.blue_team = [];
     this.items = [];
+    this.summoner_spells = [];
+    this.masteries = [];
 }
 
 // variables for match information
@@ -183,13 +206,15 @@ function writeIndividualMatch(queriedMatch, matchVar){
             matchVar.assists = cur_sum.assists;
             matchVar.deaths = cur_sum.deaths;
 
-            // generates list of items for the summoner
+            // generates list of items for the summoner and summs
             Object.keys(cur_sum).forEach(e => {
               if (e.startsWith('item') && !e.includes("Purchased") && ! cur_sum[e] == 0)
-                    {
-                        matchVar.items.push(cur_sum[e]);
-                    }
-              else {}
+                {
+                    matchVar.items.push(cur_sum[e]);
+                }
+              if (summoner_strings.includes(e)){
+                matchVar.summoner_spells.push(cur_sum[e]);
+              }
             })
             // use match info to add to player champion list
             player_champion_update(cur_sum, player);
@@ -577,7 +602,13 @@ function populateSingleMatch(matchNumber){
     var img = document.createElement("img");
     img.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+currMatch.champPlayed+".png";
     img.classList.add("char");
-    div_col_middle.appendChild(img);
+
+    // add summoner spells and champion to row
+    let champSpellRow = document.createElement("div");
+    champSpellRow.classList.add("row");
+    champSpellRow.append(img, summonerGeneration(currMatch));
+
+    div_col_middle.appendChild(champSpellRow);
 
     div_col_middle.appendChild(itemGeneration(currMatch));
 
@@ -671,6 +702,21 @@ function itemGeneration(target_match){
     }
 
     return itemRow;
+}
+
+function summonerGeneration(target_match){
+    let sumCol = document.createElement("div");
+    sumCol.classList.add("col");
+
+    for (let i = 0; i < target_match.summoner_spells.length; i++){
+        let sum_spell = document.createElement("img");
+        sum_spell.src = "http://ddragon.leagueoflegends.com/cdn/12.20.1/img/spell/" + summoner_spell_mapping[target_match.summoner_spells[i]] + ".png";
+        sum_spell.classList.add("item_img");
+        sum_spell.classList.add("summSpell");
+        sumCol.append(sum_spell);
+    }
+
+    return sumCol;
 }
 
 $(document).ready(function() {
