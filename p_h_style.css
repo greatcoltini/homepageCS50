@@ -31,7 +31,7 @@
 }
 
 .summSpell {
-    margin: 0.7vw;
+    margin: 5vw 0vw 0vw 0vw;
     border-radius: 25px;
 }
 
@@ -112,6 +112,7 @@
     border-style: solid;
     display: flex;
     float: left;
+    margin-top: 0.5vw;
 }
 
 .ward_img {

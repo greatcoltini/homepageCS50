@@ -378,42 +378,63 @@ async function search_for_summoner(name){
         if (matchHistory20[i].fetched == true){
             populateSingleMatch(i);
         }
+        addGameChampDisplay(matchHistory20[i]);
     }
-
-    populateChampList();
 
     await haltSearches();
 
 }
 
-// populates the champion list
-function populateChampList(){
+// function to add a game to the champion list display
+function addGameChampDisplay(match){
     var champ_list = document.getElementById("champlist");
+    var champDiv = "";
+    var champText = "";
 
-    for (let i = 0; i < player.championsPlayed.length; i++){
-        let champ_creation = document.createElement("li");
+    // we've already had a game with this champ
+    if (document.getElementById(match.champPlayed)){
+        champDiv = document.getElementById(match.champPlayed);
+        champText = document.getElementById(match.champPlayed + "Text");
+    }
+
+    // no pre-existing games with this champ
+    else {
+        champDiv = document.createElement("li");
+        champDiv.id = match.champPlayed;
         let champ_text = document.createElement("p");
         let champ_ico = document.createElement("img");
-        champ_ico.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+player.championsPlayed[i].name+".png";
+        champ_ico.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+match.champPlayed+".png";
         champ_ico.classList.add("sideChar");
+        champ_text.id = match.champPlayed + "Text";
         champ_text.classList.add("text-primary");
-        champ_text.innerHTML = player.championsPlayed[i].name + ": " + player.championsPlayed[i].wins + "/"
-            + player.championsPlayed[i].losses;
+        champDiv.append(champ_ico, champ_text);
+        champ_list.appendChild(champDiv);
+        champText = document.getElementById(match.champPlayed + "Text");
+    }
 
-        champ_creation.append(champ_ico, champ_text);
-
-        champ_list.appendChild(champ_creation);
+    // update data each time this is called
+    for (let i = 0; i < player.championsPlayed.length; i++){
+        if (player.championsPlayed[i].name == match.champPlayed){
+            champText.innerHTML = player.championsPlayed[i].name + ": " + player.championsPlayed[i].wins + "/"
+                + player.championsPlayed[i].losses;
+        }
     }
 }
 
 // initializes the sidebar
 function initializeSticky(){
     document.getElementById("sidebar").classList.remove("hidden");
-    document.getElementById("sb_sn").innerHTML = player.name;
-    document.getElementById("sb_rank_img").src = "\\assets\\ranked-emblems\\" + player.tier + ".png";
-    document.getElementById("sb_rank").innerHTML = player.tier + " : " + player.rank + "   " + player.leaguePoints + "LP";
-    document.getElementById("sb_wins").innerHTML = player.totalWins
-    document.getElementById("sb_losses").innerHTML = player.totalLosses;
+
+    if (player.tier != ""){
+        document.getElementById("ranked_sidebar").classList.remove("hidden");
+        document.getElementById("sb_sn").innerHTML = player.name;
+        document.getElementById("sb_rank_img").src = "\\assets\\ranked-emblems\\" + player.tier + ".png";
+        document.getElementById("sb_rank").innerHTML = player.tier + " : " + player.rank + "   " + player.leaguePoints + "LP";
+        document.getElementById("sb_wins").innerHTML = player.totalWins
+        document.getElementById("sb_losses").innerHTML = player.totalLosses;
+    }
+    else {document.getElementById("ranked_sidebar").classList.add("hidden");}
+
 
     var winrate = player.totalWins / (player.totalLosses + player.totalWins);
     var percent_winrate = winrate * 100;
@@ -670,8 +691,8 @@ function populateSingleMatch(matchNumber){
     document.getElementById("matchhistory").append(div_col_outer);
     div_col_outer.append(div_row);
     div_col_outer.classList.add("container-fluid");
-    div_row.append(header_section, q_hr, div_col_inner, div_col_middle, div_col_teams);
-    div_col_inner.append(kda_text, champ_played, side_text);
+    div_row.append(header_section, q_hr, div_col_inner, div_col_teams);
+    div_col_inner.append(div_col_middle, kda_text, champ_played, side_text);
 
     div_row.onclick = function() {changeState(this)};
 
