@@ -7,6 +7,8 @@ var champions = [];
 // ward id numbers
 var wards = [3340, 3330, 3363, 3364];
 
+
+// variables for progress bar in summary
 var match_won_int = 0;
 var won_matches = [];
 var lost_matches = [];
@@ -40,63 +42,72 @@ var summoner_spell_mapping = {
 }
 
 // define structure for a summoner object
-function summoner()
-{
-    this.name = "";
-    this.puuid = "";
-    this.summonerID = "";
-    this.rank = 0;
-    this.top5 = [];
+class summoner {
+    constructor() {
+        this.name = "";
+        this.puuid = "";
+        this.summonerID = "";
+        this.rank = 0;
+        this.top5 = [];
 
-    // ranked related info
-    this.tier = "";
-    this.rank = "";
-    this.leaguePoints = 0;
-    this.totalWins = 0;
-    this.totalLosses = 0;
+        // ranked related info
+        this.tier = "";
+        this.rank = "";
+        this.leaguePoints = 0;
+        this.totalWins = 0;
+        this.totalLosses = 0;
 
-    // list of champion objects
-    this.championsPlayed = [];
+        // list of champion objects
+        this.championsPlayed = [];
+    }
+
+    get_winrate(){
+        return parseInt((this.totalWins / (this.totalWins + this.totalLosses)) * 100);
+    }
 }
 
 // define structure for champion played information
-function championPI (){
-    this.name = "";
-    this.games = 0;
-    this.wins = 0;
-    this.losses = 0;
+class championPI {
+    constructor() {
+        this.name = "";
+        this.games = 0;
+        this.wins = 0;
+        this.losses = 0;
+    }
 }
 
 // define structure for player in the match
-function match_player()
-{
-    this.position = "";
-    this.champion = "";
-    this.name = "";
-    this.kda = "";
-    this.items = [];
-    this.teamOrder = 0;
+class match_player {
+    constructor() {
+        this.position = "";
+        this.champion = "";
+        this.name = "";
+        this.kda = "";
+        this.items = [];
+        this.teamOrder = 0;
+    }
 }
 
 // define structure for match; also contains main player info
-function match()
-{
-    this.gameId = "";
-    this.queueId = 0;
-    this.playerId = "";
-    this.champPlayed = "";
-    this.victory = 0;
-    this.lpGained = 0;
-    this.side = "";
-    this.kills = 0;
-    this.deaths = 0;
-    this.assists = 0;
-    this.fetched = false;
-    this.red_team = [];
-    this.blue_team = [];
-    this.items = [];
-    this.summoner_spells = [];
-    this.masteries = [];
+class match {
+    constructor() {
+        this.gameId = "";
+        this.queueId = 0;
+        this.playerId = "";
+        this.champPlayed = "";
+        this.victory = 0;
+        this.lpGained = 0;
+        this.side = "";
+        this.kills = 0;
+        this.deaths = 0;
+        this.assists = 0;
+        this.fetched = false;
+        this.red_team = [];
+        this.blue_team = [];
+        this.items = [];
+        this.summoner_spells = [];
+        this.masteries = [];
+    }
 }
 
 // variables for match information
@@ -435,11 +446,7 @@ function initializeSticky(){
     }
     else {document.getElementById("ranked_sidebar").classList.add("hidden");}
 
-
-    var winrate = player.totalWins / (player.totalLosses + player.totalWins);
-    var percent_winrate = winrate * 100;
-
-    document.getElementById("sb_wr").innerHTML = "<br>" + parseInt(percent_winrate) +"% Winrate";
+    document.getElementById("sb_wr").innerHTML = "<br>" + player.get_winrate() +"% Winrate";
 }
 
 // initializes the champion row
@@ -519,13 +526,6 @@ function populateSummonerDisplay(){
 function searchSummoner() {
     summoner_input = document.getElementById("summoner_name");
     search_for_summoner(summoner_input.value);
-}
-
-// function for key search
-function keySearch(){
-    if (event.code == 'Enter'){
-        searchSummoner();
-    }
 }
 
 // refreshes match history
