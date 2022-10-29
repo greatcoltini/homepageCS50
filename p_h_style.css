@@ -134,13 +134,12 @@
 }
 
 .losses {
-    font-color: red;
     color: red;
     float: right;
 }
 
 .winrate {
-    font-color: black;
+    color: black;
     float: center;
 }
 

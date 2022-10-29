@@ -110,47 +110,43 @@ class match {
 
 // variables for match information
 var matchHistory20 = [];
+var matchHistoryHidden = [];
 var red_team = [];
 var blue_team = [];
 var player = new summoner();
 
 // Function to pull summoner id from API
-function pullSummonerID(user){
-     return fetch("https://"+region+".api.riotgames.com/lol/summoner/v4/summoners/by-name/"+user.name+"?api_key="+api_key_imp.key)
-        .then(data=>{return data.json()})
-        .then(result=>{
-            user.summonerID = result.id;
-            user.puuid = result.puuid;
-        })
-        .catch(error=>
-        {
-            console.log(error)
-            user.summonerID = summonerInfoTemplate.id;
-            user.puuid = summonerInfoTemplate.puuid;
-        })
+async function pullSummonerID(user){
+     try {
+        const data = await fetch("https://" + region + ".api.riotgames.com/lol/summoner/v4/summoners/by-name/" + user.name + "?api_key=" + api_key_imp.key);
+        const result_1 = await data.json();
+        user.summonerID = result_1.id;
+        user.puuid = result_1.puuid;
+    } catch (error) {
+        console.log(error);
+        user.summonerID = summonerInfoTemplate.id;
+        user.puuid = summonerInfoTemplate.puuid;
+    }
 }
 
 // Function to pull individual player's stats
-function pullPlayerStats(user){
-    return fetch("https://"+region+".api.riotgames.com/lol/league/v4/entries/by-summoner/"+user.summonerID+"?api_key="+api_key_imp.key)
-        .then(data=>{return data.json()})
-        .then(result=>{
-            for (let i = 0; i < result.length; i++){
-                if (result[i].queueType == "RANKED_SOLO_5x5"){
-                    writeQueueData(result[i], user);
-                }
+async function pullPlayerStats(user){
+    try {
+        const data = await fetch("https://" + region + ".api.riotgames.com/lol/league/v4/entries/by-summoner/" + user.summonerID + "?api_key=" + api_key_imp.key);
+        const result_1 = await data.json();
+        for (let i = 0; i < result_1.length; i++) {
+            if (result_1[i].queueType == "RANKED_SOLO_5x5") {
+                writeQueueData(result_1[i], user);
             }
-        })
-        .catch(error=>
-            {
-                console.log(error)
-                for (let i = 0; i < specificSummonerTemplate.length; i++){
-                    if (specificSummonerTemplate[i].queueType == "RANKED_SOLO_5x5"){
-                        writeQueueData(specificSummonerTemplate[i], user);
-                    }
-                }
+        }
+    } catch (error) {
+        console.log(error);
+        for (let i_1 = 0; i_1 < specificSummonerTemplate.length; i_1++) {
+            if (specificSummonerTemplate[i_1].queueType == "RANKED_SOLO_5x5") {
+                writeQueueData(specificSummonerTemplate[i_1], user);
             }
-        )
+        }
+    }
 }
 
 // writes user-specific queue data... i.e. soloq
@@ -162,29 +158,26 @@ function writeQueueData(queueName, user){
     user.totalLosses = queueName.losses;
 }
 
-// Function to pull past 20 matches from summoner from API
-function pullMatchHistory(user, matchListVar, countInit, countFinish){
-    return fetch("https://"+morebasicregion+".api.riotgames.com/lol/match/v5/matches/by-puuid/"+user.puuid+"/ids?start="+countInit+"&count="+countFinish+"&api_key="+api_key_imp.key)
-        .then(data=>{return data.json()})
-        .then(result=>{
-            for (let i = 0; i < result.length; i++){
-                matchListVar[i] = new match();
-                matchListVar[i].gameId = result[i];
-            }
-        })
-        .catch(error=>
-        {
-            console.log(error)
-            for (let i = 0; i < 3; i++){
-                matchListVar[i] = new match();
-                matchListVar[i].gameId = matches_twenty[i];
-            }
-        })
+// Function to pull matches from summoner from API
+async function pullMatchHistory(user, matchListVar, countInit, countFinish){
+    try {
+        const data = await fetch("https://" + morebasicregion + ".api.riotgames.com/lol/match/v5/matches/by-puuid/" + user.puuid + "/ids?start=" + countInit + "&count=" + countFinish + "&api_key=" + api_key_imp.key);
+        const result_1 = await data.json();
+        for (let i = 0; i < result_1.length; i++) {
+            matchListVar[i] = new match();
+            matchListVar[i].gameId = result_1[i];
+        }
+    } catch (error) {
+        console.log(error);
+        for (let i_1 = 0; i_1 < 3; i_1++) {
+            matchListVar[i_1] = new match();
+            matchListVar[i_1].gameId = matches_twenty[i_1];
+        }
+    }
 }
 
 // Function to pull match data from API for each match
 async function pullIndividualMatch(match){
-//    alert("https://"+morebasicregion+".api.riotgames.com/lol/match/v5/matches/"+match.gameId+"?api_key="+api_key_imp.key);
     return fetch("https://"+morebasicregion+".api.riotgames.com/lol/match/v5/matches/"+match.gameId+"?api_key="+api_key_imp.key)
         .then(data=>{return data.json()})
         .then(result=>{
@@ -255,7 +248,7 @@ function player_champion_update(current_game, player){
         }
     }
     else {
-        current_champ = new championPI();
+        let current_champ = new championPI();
         current_champ.name = current_game.championName;
         current_champ.games++;
         if (current_game.win){
@@ -367,12 +360,11 @@ function generate_summoner_container(s, team_side){
 // function for searching for summoner
 async function search_for_summoner(name){
 
-    await haltSearches();
+    haltSearches();
 
     document.getElementById("summoner_name").value = name;
 
-
-    await eliminateExistingMatches();
+    eliminateExistingMatches();
     player.name = name;
     await pullSummonerID(player);
     await pullMatchHistory(player, matchHistory20, 0, 20);
@@ -381,6 +373,7 @@ async function search_for_summoner(name){
     initializeSummary();
     initializeSticky();
 
+    // generation of first 20 matches
     for (let i = 0; i < matchHistory20.length; i++)
     {
         await pullIndividualMatch(matchHistory20[i]);
@@ -390,7 +383,16 @@ async function search_for_summoner(name){
         addGameChampDisplay(matchHistory20[i]);
     }
 
-    await haltSearches();
+    await pullMatchHistory(player, matchHistoryHidden, 21, 100);
+    
+    // generation of hidden match details, for champions played
+    for (let j = 0; j < matchHistoryHidden.length; j++){
+        console.log(matchHistory20[j]);
+        await pullIndividualMatch(matchHistoryHidden[j]);
+        addGameChampDisplay(matchHistoryHidden[j]);
+    }
+
+    haltSearches();
 
 }
 
@@ -405,7 +407,6 @@ function addGameChampDisplay(match){
         champDiv = document.getElementById(match.champPlayed);
         champText = document.getElementById(match.champPlayed + "Text");
     }
-
     // no pre-existing games with this champ
     else {
         champDiv = document.createElement("li");
@@ -535,6 +536,7 @@ function eliminateExistingMatches(){
     player = new summoner();
     match_won_int = 0;
     match_loss_int = 0;
+    matchHistoryHidden = [];
 
     return 0;
 }
@@ -641,7 +643,6 @@ function populateSingleMatch(matchNumber){
         div_row.classList.add("bg-primary");
         strong_text.innerHTML += " - VICTORY";
         div_row.classList.add("match_won");
-        div_row.style.border
         match_won_int = match_won_int + 1;
         document.getElementById("iWinRow").append(img2);
     }
@@ -668,10 +669,6 @@ function populateSingleMatch(matchNumber){
     else{
         strong_text.innerHTML += " - REGULAR MATCH";
     }
-
-    let more_arrow = document.createElement("i");
-    more_arrow.classList.add("bi", "bi-arrow-down");
-    header_section.appendChild(more_arrow);
 
     let kda_text = document.createElement("h3");
     kda_text.innerHTML = "K/D/A : " + currMatch.kills + "/" + currMatch.deaths + "/" + currMatch.assists;
