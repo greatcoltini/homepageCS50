@@ -10,8 +10,6 @@ var wards = [3340, 3330, 3363, 3364];
 
 // variables for progress bar in summary
 var match_won_int = 0;
-var won_matches = [];
-var lost_matches = [];
 
 //template variables
 var match_template_mapping = {
@@ -165,21 +163,21 @@ function writeQueueData(queueName, user){
 }
 
 // Function to pull past 20 matches from summoner from API
-function pullMatchHistory(user){
-    return fetch("https://"+morebasicregion+".api.riotgames.com/lol/match/v5/matches/by-puuid/"+user.puuid+"/ids?start=0&count=20&api_key="+api_key_imp.key)
+function pullMatchHistory(user, matchListVar, countInit, countFinish){
+    return fetch("https://"+morebasicregion+".api.riotgames.com/lol/match/v5/matches/by-puuid/"+user.puuid+"/ids?start="+countInit+"&count="+countFinish+"&api_key="+api_key_imp.key)
         .then(data=>{return data.json()})
         .then(result=>{
             for (let i = 0; i < result.length; i++){
-                matchHistory20[i] = new match();
-                matchHistory20[i].gameId = result[i];
+                matchListVar[i] = new match();
+                matchListVar[i].gameId = result[i];
             }
         })
         .catch(error=>
         {
             console.log(error)
             for (let i = 0; i < 3; i++){
-                matchHistory20[i] = new match();
-                matchHistory20[i].gameId = matches_twenty[i];
+                matchListVar[i] = new match();
+                matchListVar[i].gameId = matches_twenty[i];
             }
         })
 }
@@ -377,7 +375,7 @@ async function search_for_summoner(name){
     await eliminateExistingMatches();
     player.name = name;
     await pullSummonerID(player);
-    await pullMatchHistory(player);
+    await pullMatchHistory(player, matchHistory20, 0, 20);
     await pullPlayerStats(player);
     populateSummonerDisplay();
     initializeSummary();
@@ -645,7 +643,6 @@ function populateSingleMatch(matchNumber){
         div_row.classList.add("match_won");
         div_row.style.border
         match_won_int = match_won_int + 1;
-        won_matches.push(currMatch.champPlayed);
         document.getElementById("iWinRow").append(img2);
     }
     else {
@@ -653,7 +650,6 @@ function populateSingleMatch(matchNumber){
         div_row.classList.add("bg-danger");
         strong_text.innerHTML += " - DEFEAT";
         div_row.classList.add("match_lost");
-        lost_matches.push(currMatch.champPlayed);
         match_loss_int = match_loss_int + 1;
         document.getElementById("iLossRow").append(img2);
     }
