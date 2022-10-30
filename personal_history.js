@@ -474,7 +474,7 @@ function updateChampionSidebarOrder(){
         return function(a, b){
             return (a[index] === b[index] ? 0 : (a[index] < b[index] ? -1 : 1));
         };
-    })(1))
+    })(1)).reverse();
 
     for (let k = 0; k < championSidebarArray.length; k++){
         var idName = String(championSidebarArray[k][0]);
