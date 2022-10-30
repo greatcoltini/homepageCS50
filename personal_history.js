@@ -4,6 +4,9 @@ var morebasicregion = "americas";
 // define an array of champion name, id
 var champions = [];
 
+// array of champion sidebar containers; used for sorting purposes
+var championSidebarArray = [];
+
 // ward id numbers
 var wards = [3340, 3330, 3363, 3364];
 
@@ -71,6 +74,18 @@ class championPI {
         this.games = 0;
         this.wins = 0;
         this.losses = 0;
+    }
+
+    get_games() {
+        return this.games;
+    }
+
+    get_wins() {
+        return this.wins;
+    }
+
+    get_losses() {
+        return this.losses;
     }
 }
 
@@ -401,33 +416,70 @@ function addGameChampDisplay(match){
     var champ_list = document.getElementById("champlist");
     var champDiv = "";
     var champText = "";
+    var champ = match.champPlayed;
 
     // we've already had a game with this champ
-    if (document.getElementById(match.champPlayed)){
-        champDiv = document.getElementById(match.champPlayed);
-        champText = document.getElementById(match.champPlayed + "Text");
+    if (document.getElementById(champ)){
+        champDiv = document.getElementById(champ);
+        champText = document.getElementById(champ + "Text");
+        
+
+        // increment game counter for nested array item
+        championSidebarArray[findNestedIndex(championSidebarArray, champ)][1] = championSidebarArray[findNestedIndex(championSidebarArray, champ)][1] + 1;
     }
     // no pre-existing games with this champ
     else {
         champDiv = document.createElement("li");
-        champDiv.id = match.champPlayed;
+        champDiv.id = champ;
         let champ_text = document.createElement("p");
         let champ_ico = document.createElement("img");
-        champ_ico.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+match.champPlayed+".png";
+        champ_ico.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+champ+".png";
         champ_ico.classList.add("sideChar");
-        champ_text.id = match.champPlayed + "Text";
+        champ_text.id = champ + "Text";
         champ_text.classList.add("text-primary");
         champDiv.append(champ_ico, champ_text);
         champ_list.appendChild(champDiv);
-        champText = document.getElementById(match.champPlayed + "Text");
+        champText = document.getElementById(champ + "Text");
+
+        // add to nested array
+        championSidebarArray.push([champ, 1]);
     }
 
     // update data each time this is called
     for (let i = 0; i < player.championsPlayed.length; i++){
         if (player.championsPlayed[i].name == match.champPlayed){
-            champText.innerHTML = player.championsPlayed[i].name + ": " + player.championsPlayed[i].wins + "/"
+            champText.innerHTML = championSidebarArray[findNestedIndex(championSidebarArray, champ)][0] + ": " + championSidebarArray[findNestedIndex(championSidebarArray, champ)][1] + ": " + player.championsPlayed[i].wins + "/"
                 + player.championsPlayed[i].losses;
         }
+    }
+    updateChampionSidebarOrder();
+}
+
+// return the index of the nested array item
+function findNestedIndex(req_array, item){
+    for (let i = 0; i < req_array.length; i++){
+        if (req_array[i][0] == item){
+            return i;
+        }
+    }
+    return -1;
+}
+
+// create new list of nested arrays sorted by number of games, push to sidebar
+function updateChampionSidebarOrder(){
+    var champ_list = document.getElementById("champlist");
+    // removeAllChildren(champ_list);
+
+    championSidebarArray.sort((function(index){
+        return function(a, b){
+            return (a[index] === b[index] ? 0 : (a[index] < b[index] ? -1 : 1));
+        };
+    })(1))
+
+    for (let k = 0; k < championSidebarArray.length; k++){
+        var idName = String(championSidebarArray[k][0]);
+        var childEle = document.getElementById(idName);
+        champ_list.append(childEle);
     }
 }
 
@@ -537,6 +589,7 @@ function eliminateExistingMatches(){
     match_won_int = 0;
     match_loss_int = 0;
     matchHistoryHidden = [];
+    championSidebarArray = [];
 
     return 0;
 }
