@@ -125,6 +125,10 @@ class match {
         this.summoner_spells = [];
         this.masteries = [];
     }
+
+    get_kda() {
+        return this.kills + "/" + this.deaths + "/" + this.assists;
+    }
 }
 
 // variables for match information
@@ -714,6 +718,8 @@ function populateSingleMatch(matchNumber){
     img2.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+currMatch.champPlayed+".png";
     img2.classList.add("char");
     img2.onclick = function() {onclickScroll("match" + matchNumber)};
+    var tooltip = new bootstrap.Tooltip(img2);
+    img2.title = "Match " + (matchNumber + 1) + " | KDA: " + currMatch.get_kda();
 
     if (currMatch.victory){
         img2.classList.add("wChar", "blue_team");
@@ -748,7 +754,7 @@ function populateSingleMatch(matchNumber){
     }
 
     let kda_text = document.createElement("h3");
-    kda_text.innerHTML = "K/D/A : " + currMatch.kills + "/" + currMatch.deaths + "/" + currMatch.assists;
+    kda_text.innerHTML = "K/D/A : " + currMatch.get_kda();
 
     let champ_played = document.createElement("h3");
     champ_played = currMatch.champPlayed;
