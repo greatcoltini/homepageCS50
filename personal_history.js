@@ -76,10 +76,6 @@ class championPI {
         this.losses = 0;
     }
 
-    get_name() {
-        return this.name.slice(0, 1) + toLowerCase(this.name.slice(1));
-    }
-
     get_games() {
         return this.games;
     }
@@ -221,9 +217,11 @@ function writeIndividualMatch(queriedMatch, matchVar){
             let cur_sum = queriedMatch.info.participants[i];
             matchVar.victory = cur_sum.win;
 
-            // process champ name for img
-            let championNameProper = cur_sum.championName.slice(0, 1) + cur_sum.championName.slice(1).toLowerCase();
-            matchVar.champPlayed = championNameProper;
+            if (cur_sum.championName == "FiddleSticks"){
+                matchVar.champPlayed = "Fiddlesticks";
+            }
+            else {matchVar.champPlayed = cur_sum.championName;}
+
             if (cur_sum.teamId == 200){
                 matchVar.side = "Red";
             }
@@ -296,7 +294,10 @@ function populate_team(match_participant, team){
 //        cur_player.items.push(match_participant.item_num);
 //    }
     cur_player.position = match_participant.teamPosition;
-    cur_player.champion = match_participant.championName.slice(0, 1) + match_participant.championName.slice(1).toLowerCase();
+    if (match_participant.championName == "FiddleSticks"){
+        cur_player.champion = "Fiddlesticks";
+    }
+    else {cur_player.champion = match_participant.championName;}
     cur_player.name = match_participant.summonerName;
     cur_player.kda = match_participant.kills + "/" + match_participant.deaths + "/" + match_participant.assists;
     cur_player.teamOrder = set_team_order(match_participant.teamPosition);
