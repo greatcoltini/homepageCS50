@@ -134,9 +134,9 @@ var player = new summoner();
 async function pullSummonerID(user){
      try {
         const data = await fetch("https://" + region + ".api.riotgames.com/lol/summoner/v4/summoners/by-name/" + user.name + "?api_key=" + api_key_imp.key);
-        const result_1 = await data.json();
-        user.summonerID = result_1.id;
-        user.puuid = result_1.puuid;
+        const result_summ_info = await data.json();
+        user.summonerID = result_summ_info.id;
+        user.puuid = result_summ_info.puuid;
     } catch (error) {
         console.log(error);
         user.summonerID = summonerInfoTemplate.id;
@@ -148,10 +148,10 @@ async function pullSummonerID(user){
 async function pullPlayerStats(user){
     try {
         const data = await fetch("https://" + region + ".api.riotgames.com/lol/league/v4/entries/by-summoner/" + user.summonerID + "?api_key=" + api_key_imp.key);
-        const result_1 = await data.json();
-        for (let i = 0; i < result_1.length; i++) {
-            if (result_1[i].queueType == "RANKED_SOLO_5x5") {
-                writeQueueData(result_1[i], user);
+        const result_stats = await data.json();
+        for (let i = 0; i < result_stats.length; i++) {
+            if (result_stats[i].queueType == "RANKED_SOLO_5x5") {
+                writeQueueData(result_stats[i], user);
             }
         }
     } catch (error) {
@@ -476,9 +476,17 @@ function updateChampionSidebarOrder(){
         };
     })(1)).reverse();
 
+    // if (championSidebarArray.length < 10){
+    //     l = championSidebarArray.length;
+    // }
+    // else {l = 10}
+
     for (let k = 0; k < championSidebarArray.length; k++){
         var idName = String(championSidebarArray[k][0]);
         var childEle = document.getElementById(idName);
+        if (champ_list.childElementCount == 10){
+            break;
+        }
         champ_list.append(childEle);
     }
 }
