@@ -10,7 +10,6 @@ var championSidebarArray = [];
 // ward id numbers
 var wards = [3340, 3330, 3363, 3364];
 
-
 // variables for progress bar in summary
 var match_won_int = 0;
 
@@ -20,6 +19,13 @@ var match_template_mapping = {
     "NA1_4474481942" : match2,
     "NA1_4473694628" : match3
 }
+
+// variables for match information
+var matchHistory20 = [];
+var matchHistoryHidden = [];
+var red_team = [];
+var blue_team = [];
+var player = new summoner();
 
 var summoner_strings = ["summoner1Id", "summoner2Id"];
 
@@ -130,13 +136,6 @@ class match {
         return this.kills + "/" + this.deaths + "/" + this.assists;
     }
 }
-
-// variables for match information
-var matchHistory20 = [];
-var matchHistoryHidden = [];
-var red_team = [];
-var blue_team = [];
-var player = new summoner();
 
 // Function to pull summoner id from API
 async function pullSummonerID(user){
