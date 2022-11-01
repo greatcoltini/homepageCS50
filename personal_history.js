@@ -25,7 +25,6 @@ var matchHistory20 = [];
 var matchHistoryHidden = [];
 var red_team = [];
 var blue_team = [];
-var player = new summoner();
 
 var summoner_strings = ["summoner1Id", "summoner2Id"];
 
@@ -73,6 +72,8 @@ class summoner {
     }
 }
 
+var player = new summoner();
+
 // define structure for champion played information
 class championPI {
     constructor() {
@@ -95,7 +96,7 @@ class championPI {
     }
 
     get_winrate() {
-        return parseInt((this.totalWins / (this.totalWins + this.totalLosses)) * 100);
+        return parseInt((this.wins / (this.wins + this.losses)) * 100) + "%";
     }
 }
 
@@ -220,10 +221,7 @@ function writeIndividualMatch(queriedMatch, matchVar){
             let cur_sum = queriedMatch.info.participants[i];
             matchVar.victory = cur_sum.win;
 
-            if (cur_sum.championName == "FiddleSticks"){
-                matchVar.champPlayed = "Fiddlesticks";
-            }
-            else {matchVar.champPlayed = cur_sum.championName;}
+            matchVar.champPlayed = cur_sum.championName;
 
             if (cur_sum.teamId == 200){
                 matchVar.side = "Red";
@@ -297,10 +295,7 @@ function populate_team(match_participant, team){
 //        cur_player.items.push(match_participant.item_num);
 //    }
     cur_player.position = match_participant.teamPosition;
-    if (match_participant.championName == "FiddleSticks"){
-        cur_player.champion = "Fiddlesticks";
-    }
-    else {cur_player.champion = match_participant.championName;}
+    cur_player.champion = match_participant.championName;
     cur_player.name = match_participant.summonerName;
     cur_player.kda = match_participant.kills + "/" + match_participant.deaths + "/" + match_participant.assists;
     cur_player.teamOrder = set_team_order(match_participant.teamPosition);
@@ -413,6 +408,8 @@ async function search_for_summoner(name){
         addGameChampDisplay(matchHistory20[i]);
     }
 
+    haltSearches();
+
     await pullMatchHistory(player, matchHistoryHidden, 21, 100);
     
     // generation of hidden match details, for champions played
@@ -421,8 +418,6 @@ async function search_for_summoner(name){
         await pullIndividualMatch(matchHistoryHidden[j]);
         addGameChampDisplay(matchHistoryHidden[j]);
     }
-
-    haltSearches();
 
 }
 
@@ -465,7 +460,7 @@ function addGameChampDisplay(match){
     for (let i = 0; i < player.championsPlayed.length; i++){
         if (player.championsPlayed[i].name == match.champPlayed){
             champText.innerHTML = championSidebarArray[findNestedIndex(championSidebarArray, champ)][0] + ": " + championSidebarArray[findNestedIndex(championSidebarArray, champ)][1] + ": " + player.championsPlayed[i].wins + "/"
-                + player.championsPlayed[i].losses;
+                + player.championsPlayed[i].losses + " -- " + player.championsPlayed[i].get_winrate();
         }
     }
     updateChampionSidebarOrder();
@@ -697,8 +692,6 @@ function populateSingleMatch(matchNumber){
 
     let q_hr = document.createElement('hr');
     let r_hr = document.createElement('hr');
-
-    let championRow = document.getElementById("champRow");
 
     var img = document.createElement("img");
     img.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+currMatch.champPlayed+".png";
