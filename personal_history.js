@@ -810,10 +810,10 @@ function summonerGeneration(target_match){
 
 function changeQueueButton(btn){
     const mainQueueBtn = document.getElementById("queueSelected");
-    const mainBtnOptions = document.getElementById("btnOptionsGrp");
+    const mainBtnOptions = document.getElementsByClassName("changeQB");
 
-    for (const child in mainBtnOptions){
-        child.classList.remove("disabled");
+    for (let i = 0; i < mainBtnOptions.length; i++){
+        mainBtnOptions[i].classList.remove("disabled");
     }
 
     mainQueueBtn.innerHTML = btn.innerHTML;
