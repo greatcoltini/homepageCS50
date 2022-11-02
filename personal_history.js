@@ -1,6 +1,8 @@
 var region= "na1";
 var morebasicregion = "americas";
 
+var queue = "";
+
 // define an array of champion name, id
 var champions = [];
 
@@ -184,7 +186,7 @@ function writeQueueData(queueName, user){
 // Function to pull matches from summoner from API
 async function pullMatchHistory(user, matchListVar, countInit, countFinish){
     try {
-        const data = await fetch("https://" + morebasicregion + ".api.riotgames.com/lol/match/v5/matches/by-puuid/" + user.puuid + "/ids?start=" + countInit + "&count=" + countFinish + "&api_key=" + api_key_imp.key);
+        const data = await fetch("https://" + morebasicregion + ".api.riotgames.com/lol/match/v5/matches/by-puuid/" + user.puuid + "/ids?"+"queue="+queue+"&start=" + countInit + "&count=" + countFinish + "&api_key=" + api_key_imp.key);
         const result_1 = await data.json();
         for (let i = 0; i < result_1.length; i++) {
             matchListVar[i] = new match();
@@ -817,6 +819,7 @@ function changeQueueButton(btn){
     }
 
     mainQueueBtn.innerHTML = btn.innerHTML;
+    queue = btn.id;
     btn.classList.add("disabled");
 }
 
