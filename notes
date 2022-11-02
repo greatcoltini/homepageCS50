@@ -1,0 +1,7 @@
+notes:
+
+november 2, 2022:
+
+-- when we filter through matches, we want to make sure we are pulling sufficient data; therefore strategy will be to continue parsing matches until we hit the alotted matches (20)
+
+-- we will control the filtering by using an index number, offset by how many matches we pull (i.e. index 0 = matches 0->20, index 1 = matches 20->100...)

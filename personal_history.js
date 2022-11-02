@@ -3,6 +3,9 @@ var morebasicregion = "americas";
 
 var queue = "";
 
+// matches index variable
+var index = 0;
+
 // define an array of champion name, id
 var champions = [];
 
@@ -186,6 +189,7 @@ function writeQueueData(queueName, user){
 // Function to pull matches from summoner from API
 async function pullMatchHistory(user, matchListVar, countInit, countFinish){
     try {
+        queue = document.getElementsByClassName("selected")[0].id;
         const data = await fetch("https://" + morebasicregion + ".api.riotgames.com/lol/match/v5/matches/by-puuid/" + user.puuid + "/ids?"+"queue="+queue+"&start=" + countInit + "&count=" + countFinish + "&api_key=" + api_key_imp.key);
         const result_1 = await data.json();
         for (let i = 0; i < result_1.length; i++) {
@@ -390,11 +394,16 @@ async function search_for_summoner(name){
     haltSearches();
 
     document.getElementById("summoner_name").value = name;
+    
 
     eliminateExistingMatches();
     player.name = name;
     await pullSummonerID(player);
-    await pullMatchHistory(player, matchHistory20, 0, 20);
+    while (matchHistory20.length < 20){
+        await pullMatchHistory(player, matchHistory20, index, (index + 20));
+        index = index + 20;
+    }
+    
     await pullPlayerStats(player);
     populateSummonerDisplay();
     initializeSummary();
@@ -614,6 +623,8 @@ function eliminateExistingMatches(){
     match_loss_int = 0;
     matchHistoryHidden = [];
     championSidebarArray = [];
+    index = 0;
+    queue = "";
 
     return 0;
 }
@@ -810,17 +821,20 @@ function summonerGeneration(target_match){
     return sumCol;
 }
 
+// function for changing the queue filters
 function changeQueueButton(btn){
     const mainQueueBtn = document.getElementById("queueSelected");
     const mainBtnOptions = document.getElementsByClassName("changeQB");
 
     for (let i = 0; i < mainBtnOptions.length; i++){
         mainBtnOptions[i].classList.remove("disabled");
+        mainBtnOptions[i].classList.remove("selected");
     }
 
     mainQueueBtn.innerHTML = btn.innerHTML;
     queue = btn.id;
     btn.classList.add("disabled");
+    btn.classList.add("selected");
 }
 
 $(document).ready(function() {
