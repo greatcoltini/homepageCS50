@@ -808,6 +808,13 @@ function summonerGeneration(target_match){
     return sumCol;
 }
 
+function changeQueueButton(btn){
+    const mainQueueBtn = document.getElementById("queueSelected");
+
+    mainQueueBtn.innerHTML = btn.innerHTML;
+    btn.classList.add("disabled");
+}
+
 $(document).ready(function() {
   $(window).keydown(function(event){
     if(event.keyCode == 13) {
