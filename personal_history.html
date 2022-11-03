@@ -70,20 +70,21 @@
                         <form class="searchCommands">
                             <label>Enter the Summoner Name to search:</label>
                             <input type="text" class="form-control" id="summoner_name" placeholder="Enter Summoner Name Here">
-                            <a class="btn btn-primary searchCommands" onclick="searchSummoner()">Search Summoner</a>
                             <a href="https://na.op.gg" target="_blank" class="btn btn-primary my-2 searchCommands">OP.GG</a>
+                            <a class="btn btn-primary searchCommands" onclick="searchSummoner()">Search Summoner</a>
+                            <div class="btn-group">
+                                <button type="button" id="queueSelected" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                  All
+                                </button>
+                                <ul class="dropdown-menu" id="btnOptionsGrp">
+                                  <li><a id="" class="dropdown-item disabled changeQB selected" href="#" onclick="changeQueueButton(this)">All</a></li>
+                                  <li><a id="420" class="dropdown-item changeQB" href="#" onclick="changeQueueButton(this)">Ranked Solo Queue</a></li>
+                                  <li><a id="440" class="dropdown-item changeQB" href="#" onclick="changeQueueButton(this)">Ranked Flex</a></li>
+                                  <li><a id="700" class="dropdown-item changeQB" href="#" onclick="changeQueueButton(this)">Clash</a></li> 
+                                </ul>
+                            </div>
                         </form>
-                        <div class="btn-group">
-                            <button type="button" id="queueSelected" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                              All
-                            </button>
-                            <ul class="dropdown-menu" id="btnOptionsGrp">
-                              <li><a id="" class="dropdown-item disabled changeQB selected" href="#" onclick="changeQueueButton(this)">All</a></li>
-                              <li><a id="420" class="dropdown-item changeQB" href="#" onclick="changeQueueButton(this)">Ranked Solo Queue</a></li>
-                              <li><a id="440" class="dropdown-item changeQB" href="#" onclick="changeQueueButton(this)">Ranked Flex</a></li>
-                              <li><a id="700" class="dropdown-item changeQB" href="#" onclick="changeQueueButton(this)">Clash</a></li> 
-                            </ul>
-                        </div>
+                        
                       </div>
                   </div>
                 </div>
