@@ -17,6 +17,7 @@ var wards = [3340, 3330, 3363, 3364];
 
 // variables for progress bar in summary
 var match_won_int = 0;
+var match_loss_int = 0;
 
 //template variables
 var match_template_mapping = {
@@ -77,6 +78,7 @@ class summoner {
     }
 }
 
+// define summoner object for player
 var player = new summoner();
 
 // define structure for champion played information
