@@ -138,6 +138,12 @@ class match {
         this.items = [];
         this.summoner_spells = [];
         this.masteries = [];
+        this.datetime = "";
+    }
+
+    get_humantime() {
+        var convertDate = new Date(1666734640277);
+        return convertDate.toLocaleString();
     }
 
     get_kda() {
@@ -240,6 +246,7 @@ function writeIndividualMatch(queriedMatch, matchVar){
             matchVar.kills = cur_sum.kills;
             matchVar.assists = cur_sum.assists;
             matchVar.deaths = cur_sum.deaths;
+            matchVar.datetime = queriedMatch.info.gameCreation;
 
             // generates list of items for the summoner and summs
             Object.keys(cur_sum).forEach(e => {
@@ -401,7 +408,7 @@ async function search_for_summoner(name){
     eliminateExistingMatches();
     player.name = name;
     await pullSummonerID(player);
-    while (matchHistory20.length < 20){
+    while (matchHistory20.length < 20 && index < 20){
         await pullMatchHistory(player, matchHistory20, index, (index + 20));
         index = index + 20;
     }
@@ -703,7 +710,15 @@ function populateSingleMatch(matchNumber){
     let strong_text = document.createElement("strong");
     strong_text.classList.add("mb-2", "mx-auto");
     strong_text.innerHTML = "MATCH " + (matchNumber + 1);
+    strong_text.style.float = "left";
     header_section.appendChild(strong_text);
+
+    // adds date and time to header
+    let datetime = document.createElement("strong");
+    datetime.classList.add("mb-2", "mx-auto");
+    datetime.innerHTML = currMatch.get_humantime();
+    datetime.style.float = "right";
+    header_section.appendChild(datetime);
 
     let q_hr = document.createElement('hr');
     let r_hr = document.createElement('hr');
