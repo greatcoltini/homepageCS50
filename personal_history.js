@@ -142,7 +142,7 @@ class match {
     }
 
     get_humantime() {
-        var convertDate = new Date(1666734640277);
+        var convertDate = new Date(this.datetime);
         return convertDate.toLocaleString();
     }
 
