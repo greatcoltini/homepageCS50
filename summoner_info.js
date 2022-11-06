@@ -200,6 +200,10 @@ function removeAllChildNodes(parent) {
 
 async function startup() {
     stateSwitch();
+    if (region == ""){
+        region = "na1";
+    }
+
     url ="https://"+region+".api.riotgames.com/lol/league-exp/v4/entries/RANKED_SOLO_5x5/CHALLENGER/I?page=1&api_key="+api_key_imp.key;
     createListSummoners();
     await pullSummonerData();
@@ -263,7 +267,8 @@ window.onclick = function(event) {
   }
 }
 
-window.addEventListener('load', (event) => {
+window.addEventListener('load', function(){
     startup();
-})
+}
+)
 
