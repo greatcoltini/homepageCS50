@@ -160,6 +160,7 @@ async function pullSummonerID(user){
         user.puuid = result_summ_info.puuid;
     } catch (error) {
         console.log(error);
+        alert("Failed to pull data... Showing Template");
         user.summonerID = summonerInfoTemplate.id;
         user.puuid = summonerInfoTemplate.puuid;
     }
