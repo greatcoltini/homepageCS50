@@ -533,7 +533,7 @@ function initializeSticky(){
     if (player.tier != ""){
         document.getElementById("ranked_sidebar").classList.remove("hidden");
         document.getElementById("sb_sn").innerHTML = player.name;
-        document.getElementById("sb_rank_img").src = "\\assets\\ranked-emblems\\" + player.tier + ".png";
+        document.getElementById("sb_rank_img").src = "assets\\ranked-emblems\\" + player.tier + ".png";
         document.getElementById("sb_rank").innerHTML = player.tier + " : " + player.rank + "   " + player.leaguePoints + "LP";
         document.getElementById("sb_wins").innerHTML = player.totalWins
         document.getElementById("sb_losses").innerHTML = player.totalLosses;
