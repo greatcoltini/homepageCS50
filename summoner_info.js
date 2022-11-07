@@ -161,7 +161,7 @@ function generateSummonerCSS(counter) {
 
     for (i = 0; i < 5; i++){
         var img = document.createElement("img");
-        img.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+summoners[counter].top5[i]+".png";
+        img.src = "https://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+summoners[counter].top5[i]+".png";
         chal_top5.appendChild(img);
     }
 
