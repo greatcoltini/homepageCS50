@@ -792,6 +792,7 @@ function populateSingleMatch(matchNumber){
     div_col_outer.classList.add("container-fluid");
     div_row.append(header_section, q_hr, div_col_inner, div_col_teams);
     div_col_inner.append(div_col_middle, kda_text, champ_played, side_text);
+    div_col_inner.classList.add("hideLength");
 
     div_row.onclick = function() {changeState(this)};
 
