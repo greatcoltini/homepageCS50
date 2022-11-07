@@ -305,11 +305,15 @@ function player_champion_update(current_game, player){
 // takes in a match participant, a summoner object, and a team, and fills the team with the summoner
 function populate_team(match_participant, team){
     cur_player = new match_player();
-//    for (let i = 0; i < 6; i++){
-//        var item_num = "item" + i;
-//        alert(match_participant.item_num);
-//        cur_player.items.push(match_participant.item_num);
-//    }
+
+    // generates list of items for the summoner
+    Object.keys(match_participant).forEach(e => {
+        if (e.startsWith('item') && !e.includes("Purchased") && ! match_participant[e] == 0)
+        {
+            cur_player.items.push(match_participant[e]);
+        }
+    })
+
     cur_player.position = match_participant.teamPosition;
     cur_player.champion = match_participant.championName;
     cur_player.name = match_participant.summonerName;
@@ -372,6 +376,8 @@ function generate_summoner_container(s, team_side){
         summoner_container.classList.add("red_team");
     }
 
+    
+
     var c_ico = document.createElement("img");
     c_ico.src = "https://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+s.champion+".png";
     c_ico.classList.add("c_ico");
@@ -391,11 +397,41 @@ function generate_summoner_container(s, team_side){
 
     summoner_container.append(c_ico);
     summoner_container.append(name_text);
+    // function to generate hover list of items:
+    summoner_container.append(generate_item_hover(s));
+
     summoner_container.onclick = function(){
         search_for_summoner(s.name);
     };
 
+    summoner_container.onmouseenter = function(){
+        changeState(this);
+    };
+    summoner_container.onmouseleave = function(){
+        changeState(this);
+    };
+
     return summoner_container;
+}
+
+// generates items on hovering of char
+function generate_item_hover(s){
+
+    var itemsContainer = document.createElement("div");
+    itemsContainer.classList.add("expanded");
+    itemsContainer.classList.add("hidden");
+
+    for (let i = 0; i < 7; i++){
+        var itemImg = document.createElement("img");
+        itemImg.src = "https://ddragon.leagueoflegends.com/cdn/12.20.1/img/item/" + s.items[i] + ".png";
+        itemImg.classList.add("item_img");
+        if (wards.includes(s.items[i])){
+            itemImg.classList.add("ward_img");
+        }
+        itemsContainer.append(itemImg);
+    }
+
+    return itemsContainer;
 }
 
 // function for searching for summoner
@@ -787,6 +823,7 @@ function populateSingleMatch(matchNumber){
     let side_text = document.createElement("h3");
     side_text.innerHTML = currMatch.side;
 
+    // generates team containers; for each match history
     div_col_teams.append(generate_team_container(currMatch.blue_team, 0), r_hr, generate_team_container(currMatch.red_team, 1));
 
     document.getElementById("matchhistory").append(div_col_outer);

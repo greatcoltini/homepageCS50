@@ -157,3 +157,7 @@
     }
 }
 
+.hiddenUntilHover {
+    display: none;
+}
+
