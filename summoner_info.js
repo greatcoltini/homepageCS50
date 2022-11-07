@@ -86,7 +86,7 @@ function writeTopFiveChamps(summoner, tfcl){
 
 // import champions.json
 async function readChampionsJson() {
-    return fetch("http://ddragon.leagueoflegends.com/cdn/12.17.1/data/en_US/champion.json")
+    return fetch("https://ddragon.leagueoflegends.com/cdn/12.17.1/data/en_US/champion.json")
         .then(data=>{return data.json()})
         .then(cres=>{
             var champdata = cres.data;
@@ -128,7 +128,7 @@ async function readChampionsJson() {
                         }
                     }
                 }
-                
+
             } catch (error) {
                 console.log(error);
             }
