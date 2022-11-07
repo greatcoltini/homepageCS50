@@ -107,33 +107,7 @@ async function readChampionsJson() {
                 }
             }
         })
-        .catch(error=>{
-            console.log(error);
-            try {
-                const data = fetch("data/champion.json");
-                const result = data.json();
-                for (let i = 0; i < 161; i++){
-                    // champions[0] is name, champions[0][b] is id
-                    champions.push([result[Object.keys(champdata)[i]].id, result[Object.keys(champdata)[i]].key]);
-                }
-    
-                // parse through top 5, replace id with name
-                for (let i = 0; i < summoners.length; i++){
-                    for (let j = 0; j < 5; j ++){
-                        for (let k = 0; k < champions.length; k++)
-                        {
-                            if (summoners[i].top5[j] == champions[k][1]){
-                                summoners[i].top5[j] = champions[k][0];
-                            }
-                        }
-                    }
-                }
-
-            } catch (error) {
-                console.log(error);
-            }
-        
-        })
+        .catch(error=>{console.log(error)})
 }
 
 // populate section with data from summoner object
