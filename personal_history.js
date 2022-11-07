@@ -462,6 +462,7 @@ function addGameChampDisplay(match){
     else {
         champDiv = document.createElement("li");
         champDiv.id = champ;
+        champDiv.classList.add("champion_li");
         let champ_text = document.createElement("p");
         let champ_ico = document.createElement("img");
         champ_ico.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+champ+".png";
@@ -581,6 +582,7 @@ function initializeSummary(){
 
 }
 
+// populates the summoner progress bar
 function populateSummonerDisplay(){
 
      let display_main = document.createElement("div");

@@ -146,6 +146,10 @@
     margin-top: 3vw;
 }
 
+.champion_li {
+    margin: 3vw;
+}
+
 /* Style for hiding */
 @media screen and (max-width:600px){
     .hideLength{
