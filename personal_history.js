@@ -681,7 +681,7 @@ function haltSearches(){
 // scrolls window to target on click
 function onclickScroll(matchIdentifier){
     var target = document.getElementById(matchIdentifier);
-    target.scrollIntoView({block: "end"});
+    target.scrollIntoView({behavior: "smooth", block: "center"});
 }
 
 // function to populate matches into feed
