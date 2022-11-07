@@ -373,7 +373,7 @@ function generate_summoner_container(s, team_side){
     }
 
     var c_ico = document.createElement("img");
-    c_ico.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+s.champion+".png";
+    c_ico.src = "https://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+s.champion+".png";
     c_ico.classList.add("c_ico");
 
     let name_text = document.createElement("strong");
@@ -465,7 +465,7 @@ function addGameChampDisplay(match){
         champDiv.classList.add("champion_li");
         let champ_text = document.createElement("p");
         let champ_ico = document.createElement("img");
-        champ_ico.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+champ+".png";
+        champ_ico.src = "https://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+champ+".png";
         champ_ico.classList.add("sideChar");
         champ_text.id = champ + "Text";
         champ_text.classList.add("text-primary");
@@ -727,7 +727,7 @@ function populateSingleMatch(matchNumber){
     let r_hr = document.createElement('hr');
 
     var img = document.createElement("img");
-    img.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+currMatch.champPlayed+".png";
+    img.src = "https://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+currMatch.champPlayed+".png";
     img.classList.add("char");
 
     // add summoner spells and champion to row
@@ -740,7 +740,7 @@ function populateSingleMatch(matchNumber){
     div_col_middle.appendChild(itemGeneration(currMatch));
 
     var img2 = document.createElement("img");
-    img2.src = "http://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+currMatch.champPlayed+".png";
+    img2.src = "https://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+currMatch.champPlayed+".png";
     img2.classList.add("char");
     img2.onclick = function() {onclickScroll("match" + matchNumber)};
     var tooltip = new bootstrap.Tooltip(img2);
@@ -833,7 +833,7 @@ function summonerGeneration(target_match){
 
     for (let i = 0; i < target_match.summoner_spells.length; i++){
         let sum_spell = document.createElement("img");
-        sum_spell.src = "http://ddragon.leagueoflegends.com/cdn/12.20.1/img/spell/" + summoner_spell_mapping[target_match.summoner_spells[i]] + ".png";
+        sum_spell.src = "https://ddragon.leagueoflegends.com/cdn/12.20.1/img/spell/" + summoner_spell_mapping[target_match.summoner_spells[i]] + ".png";
         sum_spell.classList.add("item_img");
         sum_spell.classList.add("summSpell");
         sumCol.append(sum_spell);
