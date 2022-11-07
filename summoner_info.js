@@ -92,7 +92,7 @@ async function readChampionsJson() {
             var champdata = cres.data;
             for (let i = 0; i < 161; i++){
                 // champions[0] is name, champions[0][b] is id
-                champions.push([champdata[Object.keys(champdata)[i]].key, champdata[Object.keys(champdata)[i]].id]);
+                champions.push([champdata[Object.keys(champdata)[i]].id, champdata[Object.keys(champdata)[i]].key]);
             }
 
             // parse through top 5, replace id with name
