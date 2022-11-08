@@ -421,7 +421,7 @@ function generate_item_hover(s){
     itemsContainer.classList.add("expanded");
     itemsContainer.classList.add("hidden");
 
-    for (let i = 0; i < 7; i++){
+    for (let i = 0; i < s.items.length; i++){
         var itemImg = document.createElement("img");
         itemImg.src = "https://ddragon.leagueoflegends.com/cdn/12.20.1/img/item/" + s.items[i] + ".png";
         itemImg.classList.add("item_img");
