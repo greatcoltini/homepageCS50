@@ -56,6 +56,7 @@ var summoner_spell_mapping = {
 // define structure for a summoner object
 class summoner {
     constructor() {
+        // summoner information
         this.name = "";
         this.puuid = "";
         this.summonerID = "";
@@ -116,6 +117,22 @@ class match_player {
         this.kda = "";
         this.items = [];
         this.teamOrder = 0;
+    }
+}
+
+// define structure for item in player
+class item {
+    constructor(){
+        this.id = 0;
+        this.name = "";
+    }
+
+    get_name(){
+        return this.name;
+    }
+
+    get_id(){
+        return this.id;
     }
 }
 
@@ -186,6 +203,24 @@ async function pullPlayerStats(user){
     }
 }
 
+// // Function to pull item's information from item.json
+// async function pullItemInfo(item){
+//     try {
+//         const data = await fetch("https://ddragon.leagueoflegends.com/cdn/12.17.1/data/en_US/item.json");
+//         const result_items = await result_items.json();
+//         for (let i = 0; i < result_items.length; i++) {
+//             if (result_items[i] == "data"){
+//                 const itemdata = results[i];
+//                 for (let j = 0; j < itemdata; j++){
+//                     if (j == )
+//                 }
+//             }
+//         }
+//     } catch (error){
+//         console.log(error);
+//     }
+// }
+
 // writes user-specific queue data... i.e. soloq
 function writeQueueData(queueName, user){
     user.tier = queueName.tier;
@@ -253,7 +288,11 @@ function writeIndividualMatch(queriedMatch, matchVar){
             Object.keys(cur_sum).forEach(e => {
               if (e.startsWith('item') && !e.includes("Purchased") && ! cur_sum[e] == 0)
                 {
-                    matchVar.items.push(cur_sum[e]);
+                    // create new item to add
+                    new_item = new item();
+                    new_item.id = cur_sum[e];
+                    new_item.name = "";
+                    matchVar.items.push(new_item);
                 }
               if (summoner_strings.includes(e)){
                 matchVar.summoner_spells.push(cur_sum[e]);
@@ -310,7 +349,11 @@ function populate_team(match_participant, team){
     Object.keys(match_participant).forEach(e => {
         if (e.startsWith('item') && !e.includes("Purchased") && ! match_participant[e] == 0)
         {
-            cur_player.items.push(match_participant[e]);
+            // create new item to add
+            new_item = new item();
+            new_item.id = match_participant[e];
+            new_item.name = "";
+            cur_player.items.push(new_item);
         }
     })
 
@@ -423,9 +466,9 @@ function generate_item_hover(s){
 
     for (let i = 0; i < s.items.length; i++){
         var itemImg = document.createElement("img");
-        itemImg.src = "https://ddragon.leagueoflegends.com/cdn/12.20.1/img/item/" + s.items[i] + ".png";
+        itemImg.src = "https://ddragon.leagueoflegends.com/cdn/12.20.1/img/item/" + s.items[i].id + ".png";
         itemImg.classList.add("item_img");
-        if (wards.includes(s.items[i])){
+        if (wards.includes(s.items[i].id)){
             itemImg.classList.add("ward_img");
         }
         itemsContainer.append(itemImg);
@@ -441,7 +484,6 @@ async function search_for_summoner(name){
 
     document.getElementById("summoner_name").value = name;
     
-
     eliminateExistingMatches();
     player.name = name;
     await pullSummonerID(player);
@@ -490,7 +532,6 @@ function addGameChampDisplay(match){
         champDiv = document.getElementById(champ);
         champText = document.getElementById(champ + "Text");
         
-
         // increment game counter for nested array item
         championSidebarArray[findNestedIndex(championSidebarArray, champ)][1] = championSidebarArray[findNestedIndex(championSidebarArray, champ)][1] + 1;
     }
@@ -853,9 +894,9 @@ function itemGeneration(target_match){
 
     for (let i = 0; i < target_match.items.length; i++){
         let item_src = document.createElement("img");
-        item_src.src = "https://ddragon.leagueoflegends.com/cdn/12.20.1/img/item/" + target_match.items[i] + ".png";
+        item_src.src = "https://ddragon.leagueoflegends.com/cdn/12.20.1/img/item/" + target_match.items[i].id + ".png";
         item_src.classList.add("item_img");
-        if (wards.includes(target_match.items[i])){
+        if (wards.includes(target_match.items[i].id)){
             item_src.classList.add("ward_img");
         }
         itemRow.append(item_src);
