@@ -944,3 +944,12 @@ $(document).ready(function() {
     }
   });
 });
+
+// function for searching for top 10 player rank id
+if (new URLSearchParams(window.location.search).get('callFunction').startsWith('searchSummoner')) {
+    // Call function or do whatever
+    var params = new URLSearchParams(window.location.search).get('callFunction');;
+    var endIndex = params.lastIndexOf(searchSummoner);
+    var playerName = params.substring(endIndex + 15);
+    search_for_summoner(playerName);
+   }
