@@ -114,7 +114,6 @@ async function readChampionsJson() {
 function populateSection(id, title, lp_display, top5){
     title.innerHTML = summoners[id].name;
     title.onclick = function(){
-        // location.href = "personal_history.html";
         window.location.replace('personal_history.html?callFunction=searchSummoner' + summoners[id].name);
     }
     
