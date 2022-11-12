@@ -31,6 +31,10 @@ var matchHistory20 = [];
 var matchHistoryHidden = [];
 var red_team = [];
 var blue_team = [];
+var temp_item = "";
+
+// mapping of items name -> id
+var itemsArray = [];
 
 var summoner_strings = ["summoner1Id", "summoner2Id"];
 
@@ -203,19 +207,27 @@ async function pullPlayerStats(user){
     }
 }
 
-// Function to pull item's information from item.json
-async function pullItemInfo(item){
-    try {
-        const data = await fetch("https://ddragon.leagueoflegends.com/cdn/12.17.1/data/en_US/item.json");
-        const result_items = await data.json();
-        alert(result_items.data[1001]);
-        for (let k in result_items.data) {
-            if (k == item){
-                item.name = k.name;
+// import items.json, generates array of items id and name
+async function readItemsJson() {
+    return fetch("https://ddragon.leagueoflegends.com/cdn/12.17.1/data/en_US/item.json")
+        .then(data=>{return data.json()})
+        .then(res=>{
+            var itemdata = res.data;
+            for (let itemid in itemdata){
+                // champions[0] is name, champions[0][b] is id
+                itemsArray.push([itemid, itemdata[itemid].name]);
             }
+        })
+        .catch(error=>{console.log(error)})
+}
+
+// returns the corresponding item name for the item
+function itemName(item_id){
+    // pparse through item array, return name if id corresponds to given id
+    for (let j = 0; j < itemsArray.length; j ++){
+        if (itemsArray[j][0] == item_id){
+            return itemsArray[j][1];
         }
-    } catch (error){
-        console.log(error);
     }
 }
 
@@ -289,7 +301,7 @@ function writeIndividualMatch(queriedMatch, matchVar){
                     // create new item to add
                     new_item = new item();
                     new_item.id = cur_sum[e];
-                    pullItemInfo(new_item);
+                    new_item.name = itemName(new_item.id); 
                     matchVar.items.push(new_item);
                 }
               if (summoner_strings.includes(e)){
@@ -340,7 +352,7 @@ function player_champion_update(current_game, player){
 }
 
 // takes in a match participant, a summoner object, and a team, and fills the team with the summoner
-function populate_team(match_participant, team){
+ function populate_team(match_participant, team){
     cur_player = new match_player();
 
     // generates list of items for the summoner
@@ -350,7 +362,7 @@ function populate_team(match_participant, team){
             // create new item to add
             new_item = new item();
             new_item.id = match_participant[e];
-            pullItemInfo(new_item);
+            new_item.name = itemName(new_item.id); 
             cur_player.items.push(new_item);
         }
     })
@@ -469,6 +481,8 @@ function generate_item_hover(s){
         if (wards.includes(s.items[i].id)){
             itemImg.classList.add("ward_img");
         }
+        var tooltip = new bootstrap.Tooltip(itemImg);
+        itemImg.title = s.items[i].name;
         itemsContainer.append(itemImg);
     }
 
@@ -481,6 +495,8 @@ async function search_for_summoner(name){
     haltSearches();
 
     document.getElementById("summoner_name").value = name;
+
+    readItemsJson();
     
     eliminateExistingMatches();
     player.name = name;
@@ -518,7 +534,7 @@ async function search_for_summoner(name){
 
 }
 
-// function to add a game to the champion list display
+// function to add a game to the champion list display -- sidebar
 function addGameChampDisplay(match){
     var champ_list = document.getElementById("champlist");
     var champDiv = "";
