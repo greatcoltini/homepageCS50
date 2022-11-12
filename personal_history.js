@@ -203,23 +203,21 @@ async function pullPlayerStats(user){
     }
 }
 
-// // Function to pull item's information from item.json
-// async function pullItemInfo(item){
-//     try {
-//         const data = await fetch("https://ddragon.leagueoflegends.com/cdn/12.17.1/data/en_US/item.json");
-//         const result_items = await result_items.json();
-//         for (let i = 0; i < result_items.length; i++) {
-//             if (result_items[i] == "data"){
-//                 const itemdata = results[i];
-//                 for (let j = 0; j < itemdata; j++){
-//                     if (j == )
-//                 }
-//             }
-//         }
-//     } catch (error){
-//         console.log(error);
-//     }
-// }
+// Function to pull item's information from item.json
+async function pullItemInfo(item){
+    try {
+        const data = await fetch("https://ddragon.leagueoflegends.com/cdn/12.17.1/data/en_US/item.json");
+        const result_items = await data.json();
+        alert(result_items.data[1001]);
+        for (let k in result_items.data) {
+            if (k == item){
+                item.name = k.name;
+            }
+        }
+    } catch (error){
+        console.log(error);
+    }
+}
 
 // writes user-specific queue data... i.e. soloq
 function writeQueueData(queueName, user){
@@ -291,7 +289,7 @@ function writeIndividualMatch(queriedMatch, matchVar){
                     // create new item to add
                     new_item = new item();
                     new_item.id = cur_sum[e];
-                    new_item.name = "";
+                    pullItemInfo(new_item);
                     matchVar.items.push(new_item);
                 }
               if (summoner_strings.includes(e)){
@@ -352,7 +350,7 @@ function populate_team(match_participant, team){
             // create new item to add
             new_item = new item();
             new_item.id = match_participant[e];
-            new_item.name = "";
+            pullItemInfo(new_item);
             cur_player.items.push(new_item);
         }
     })
@@ -899,6 +897,8 @@ function itemGeneration(target_match){
         if (wards.includes(target_match.items[i].id)){
             item_src.classList.add("ward_img");
         }
+        var tooltip = new bootstrap.Tooltip(item_src);
+        item_src.title = target_match.items[i].name;
         itemRow.append(item_src);
     }
 
