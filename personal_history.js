@@ -129,6 +129,7 @@ class item {
     constructor(){
         this.id = 0;
         this.name = "";
+        this.cost = "";
     }
 
     get_name(){
@@ -137,6 +138,10 @@ class item {
 
     get_id(){
         return this.id;
+    }
+
+    set_cost(price){
+        this.cost = "(" + toString(price) + ")";
     }
 }
 
@@ -215,18 +220,18 @@ async function readItemsJson() {
             var itemdata = res.data;
             for (let itemid in itemdata){
                 // champions[0] is name, champions[0][b] is id
-                itemsArray.push([itemid, itemdata[itemid].name]);
+                itemsArray.push([itemid, itemdata[itemid].name, itemdata[itemid].gold.total]);
             }
         })
         .catch(error=>{console.log(error)})
 }
 
 // returns the corresponding item name for the item
-function itemName(item_id){
+function itemNameAndPrice(item_id){
     // pparse through item array, return name if id corresponds to given id
     for (let j = 0; j < itemsArray.length; j ++){
         if (itemsArray[j][0] == item_id){
-            return itemsArray[j][1];
+            return [itemsArray[j][1], itemsArray[j][2]];
         }
     }
 }
@@ -301,7 +306,7 @@ function writeIndividualMatch(queriedMatch, matchVar){
                     // create new item to add
                     new_item = new item();
                     new_item.id = cur_sum[e];
-                    new_item.name = itemName(new_item.id); 
+                    new_item.name, new_item.price = itemNameAndPrice(new_item.id); 
                     matchVar.items.push(new_item);
                 }
               if (summoner_strings.includes(e)){
@@ -362,7 +367,7 @@ function player_champion_update(current_game, player){
             // create new item to add
             new_item = new item();
             new_item.id = match_participant[e];
-            new_item.name = itemName(new_item.id); 
+            new_item.name, new_item.price = itemNameAndPrice(new_item.id); 
             cur_player.items.push(new_item);
         }
     })
