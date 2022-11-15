@@ -63,7 +63,7 @@ function writeIndividualMatch(queriedMatch, matchVar){
                     // create new item to add
                     new_item = new item();
                     new_item.id = cur_sum[e];
-                    new_item.name, new_item.price = itemNameAndPrice(new_item.id); 
+                    [new_item.name, new_item.price] = itemNameAndPrice(new_item.id); 
                     matchVar.items.push(new_item);
                 }
               if (SUMMONER_SPELL_STRINGS.includes(e)){
