@@ -98,7 +98,7 @@ async function pullIndividualMatch(match){
         })
         .catch(error=>{
             console.log(error);
-            writeIndividualMatch(match_template_mapping[match.gameId], match);
+            writeIndividualMatch(MATCH_TEMPLATE_MAPPING[match.gameId], match);
         })
 }
 
@@ -174,7 +174,7 @@ function populate_team(match_participant, team){
     cur_player.champion = match_participant.championName;
     cur_player.name = match_participant.summonerName;
     cur_player.kda = match_participant.kills + "/" + match_participant.deaths + "/" + match_participant.assists;
-    cur_player.teamOrder = constants.TEAM_ORDER(match_participant.teamPosition);
+    cur_player.teamOrder = TEAM_ORDER[match_participant.teamPosition];
     // set team order
     team.push(cur_player);
 }

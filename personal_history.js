@@ -23,7 +23,7 @@ var queue = "";
 var itemsArray = [];
 
 // define summoner object for player
-var player = new player.summoner();
+var player = new summoner();
 
 // writes user-specific queue data... i.e. soloq
 function writeQueueData(queueName, user){
@@ -63,10 +63,10 @@ function writeIndividualMatch(queriedMatch, matchVar){
                     // create new item to add
                     new_item = new item();
                     new_item.id = cur_sum[e];
-                    new_item.name, new_item.price = items_code.itemNameAndPrice(new_item.id); 
+                    new_item.name, new_item.price = itemNameAndPrice(new_item.id); 
                     matchVar.items.push(new_item);
                 }
-              if (constants.SUMMONER_SPELL_STRINGS.includes(e)){
+              if (SUMMONER_SPELL_STRINGS.includes(e)){
                 matchVar.summoner_spells.push(cur_sum[e]);
               }
             })
@@ -166,7 +166,7 @@ function generate_item_hover(s){
         var itemImg = document.createElement("img");
         itemImg.src = "https://ddragon.leagueoflegends.com/cdn/12.20.1/img/item/" + s.items[i].id + ".png";
         itemImg.classList.add("item_img");
-        if (constants.WARDS.includes(s.items[i].id)){
+        if (WARDS.includes(s.items[i].id)){
             itemImg.classList.add("ward_img");
         }
         var tooltip = new bootstrap.Tooltip(itemImg);
@@ -184,17 +184,17 @@ async function search_for_summoner(name){
 
     document.getElementById("summoner_name").value = name;
 
-    items_code.readItemsJson(itemsArray);
+    readItemsJson(itemsArray);
     
     eliminateExistingMatches();
     player.name = name;
-    await pullSummonerID(player);
+    await pullSummonerID(region, player);
     while (matchHistory20.length < 20 && index < 20){
         await pullMatchHistory(player, matchHistory20, index, (index + 20));
         index = index + 20;
     }
     
-    await pullPlayerStats(player);
+    await pullPlayerStats(region, player);
     populateSummonerDisplay();
     initializeSummary();
     initializeSticky();
@@ -409,7 +409,7 @@ function eliminateExistingMatches(){
     removeAllChildren(document.getElementById("matchhistory"));
 
     matchHistory20 = [];
-    player = new player.summoner();
+    player = new summoner();
     match_won_int = 0;
     match_loss_int = 0;
     matchHistoryHidden = [];
@@ -615,7 +615,7 @@ function summonerGeneration(target_match){
 
     for (let i = 0; i < target_match.summoner_spells.length; i++){
         let sum_spell = document.createElement("img");
-        sum_spell.src = "https://ddragon.leagueoflegends.com/cdn/12.20.1/img/spell/" + constants.SUMMONER_SPELL_MAPPING[target_match.summoner_spells[i]] + ".png";
+        sum_spell.src = "https://ddragon.leagueoflegends.com/cdn/12.20.1/img/spell/" + SUMMONER_SPELL_MAPPING[target_match.summoner_spells[i]] + ".png";
         sum_spell.classList.add("item_img");
         sum_spell.classList.add("summSpell");
         sumCol.append(sum_spell);
