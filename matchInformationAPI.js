@@ -165,7 +165,7 @@ function populate_team(match_participant, team){
             // create new item to add
             new_item = new item();
             new_item.id = match_participant[e];
-            new_item.name, new_item.price = itemNameAndPrice(new_item.id); 
+            [new_item.name, new_item.price] = itemNameAndPrice(new_item.id); 
             cur_player.items.push(new_item);
         }
     })
