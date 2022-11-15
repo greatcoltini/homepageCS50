@@ -1,8 +1,3 @@
-var region= "na1";
-var morebasicregion = "americas";
-
-var queue = "";
-
 // matches index variable
 var index = 0;
 
@@ -12,19 +7,9 @@ var champions = [];
 // array of champion sidebar containers; used for sorting purposes
 var championSidebarArray = [];
 
-// ward id numbers
-var wards = [3340, 3330, 3363, 3364];
-
 // variables for progress bar in summary
 var match_won_int = 0;
 var match_loss_int = 0;
-
-//template variables
-var match_template_mapping = {
-    "NA1_4474515321" : match1,
-    "NA1_4474481942" : match2,
-    "NA1_4473694628" : match3
-}
 
 // variables for match information
 var matchHistory20 = [];
@@ -32,209 +17,13 @@ var matchHistoryHidden = [];
 var red_team = [];
 var blue_team = [];
 var temp_item = "";
+var queue = "";
 
 // mapping of items name -> id
 var itemsArray = [];
 
-var summoner_strings = ["summoner1Id", "summoner2Id"];
-
-// summoner spell mapping (for ease)
-var summoner_spell_mapping = {
-    4 : "SummonerFlash",
-    21 : "SummonerBarrier",
-    1 : "SummonerBoost", // cleanse
-    14 : "SummonerDot", // ignite
-    3 : "SummonerExhaust",
-    6 : "SummonerHaste",
-    7 : "SummonerHeal",
-    54 : "Summoner_UltBookPlaceholder",
-    12 : "SummonerTeleport",
-    32 : "SummonerSnowball",
-    39 : "SummonerSnowURFSnowball_Mark",
-    11 : "SummonerSmite",
-    31 : "SummonerPoroThrow",
-    30 : "SummonerPoroRecall",
-    13 : "SummonerMana"
-}
-
-// define structure for a summoner object
-class summoner {
-    constructor() {
-        // summoner information
-        this.name = "";
-        this.puuid = "";
-        this.summonerID = "";
-        this.rank = 0;
-        this.top5 = [];
-
-        // ranked related info
-        this.tier = "";
-        this.rank = "";
-        this.leaguePoints = 0;
-        this.totalWins = 0;
-        this.totalLosses = 0;
-
-        // list of champion objects
-        this.championsPlayed = [];
-    }
-
-    get_winrate(){
-        return parseInt((this.totalWins / (this.totalWins + this.totalLosses)) * 100);
-    }
-}
-
 // define summoner object for player
 var player = new summoner();
-
-// define structure for champion played information
-class championPI {
-    constructor() {
-        this.name = "";
-        this.games = 0;
-        this.wins = 0;
-        this.losses = 0;
-    }
-
-    get_games() {
-        return this.games;
-    }
-
-    get_wins() {
-        return this.wins;
-    }
-
-    get_losses() {
-        return this.losses;
-    }
-
-    get_winrate() {
-        return parseInt((this.wins / (this.wins + this.losses)) * 100) + "%";
-    }
-}
-
-// define structure for player in the match
-class match_player {
-    constructor() {
-        this.position = "";
-        this.champion = "";
-        this.name = "";
-        this.kda = "";
-        this.items = [];
-        this.teamOrder = 0;
-    }
-}
-
-// define structure for item in player
-class item {
-    constructor(){
-        this.id = 0;
-        this.name = "";
-        this.cost = "";
-    }
-
-    get_name(){
-        return this.name;
-    }
-
-    get_id(){
-        return this.id;
-    }
-
-    set_cost(price){
-        this.cost = "(" + toString(price) + ")";
-    }
-}
-
-// define structure for match; also contains main player info
-class match {
-    constructor() {
-        this.gameId = "";
-        this.queueId = 0;
-        this.playerId = "";
-        this.champPlayed = "";
-        this.victory = 0;
-        this.lpGained = 0;
-        this.side = "";
-        this.kills = 0;
-        this.deaths = 0;
-        this.assists = 0;
-        this.fetched = false;
-        this.red_team = [];
-        this.blue_team = [];
-        this.items = [];
-        this.summoner_spells = [];
-        this.masteries = [];
-        this.datetime = "";
-    }
-
-    get_humantime() {
-        var convertDate = new Date(this.datetime);
-        return convertDate.toLocaleString();
-    }
-
-    get_kda() {
-        return this.kills + "/" + this.deaths + "/" + this.assists;
-    }
-}
-
-// Function to pull summoner id from API
-async function pullSummonerID(user){
-     try {
-        const data = await fetch("https://" + region + ".api.riotgames.com/lol/summoner/v4/summoners/by-name/" + user.name + "?api_key=" + api_key_imp.key);
-        const result_summ_info = await data.json();
-        user.summonerID = result_summ_info.id;
-        user.puuid = result_summ_info.puuid;
-    } catch (error) {
-        console.log(error);
-        alert("Failed to pull data... Showing Template");
-        user.summonerID = summonerInfoTemplate.id;
-        user.puuid = summonerInfoTemplate.puuid;
-    }
-}
-
-// Function to pull individual player's stats
-async function pullPlayerStats(user){
-    try {
-        const data = await fetch("https://" + region + ".api.riotgames.com/lol/league/v4/entries/by-summoner/" + user.summonerID + "?api_key=" + api_key_imp.key);
-        const result_stats = await data.json();
-        for (let i = 0; i < result_stats.length; i++) {
-            if (result_stats[i].queueType == "RANKED_SOLO_5x5") {
-                writeQueueData(result_stats[i], user);
-            }
-        }
-    } catch (error) {
-        console.log(error);
-        for (let i_1 = 0; i_1 < specificSummonerTemplate.length; i_1++) {
-            if (specificSummonerTemplate[i_1].queueType == "RANKED_SOLO_5x5") {
-                writeQueueData(specificSummonerTemplate[i_1], user);
-            }
-        }
-    }
-}
-
-// import items.json, generates array of items id and name
-async function readItemsJson() {
-    return fetch("https://ddragon.leagueoflegends.com/cdn/12.17.1/data/en_US/item.json")
-        .then(data=>{return data.json()})
-        .then(res=>{
-            var itemdata = res.data;
-            for (let itemid in itemdata){
-                // champions[0] is name, champions[0][b] is id
-                itemsArray.push([itemid, itemdata[itemid].name, itemdata[itemid].gold.total]);
-            }
-        })
-        .catch(error=>{console.log(error)})
-}
-
-// returns the corresponding item name for the item
-function itemNameAndPrice(item_id){
-    // pparse through item array, return name if id corresponds to given id
-    for (let j = 0; j < itemsArray.length; j ++){
-        if (itemsArray[j][0] == item_id){
-            return [itemsArray[j][1], itemsArray[j][2]];
-        }
-    }
-}
 
 // writes user-specific queue data... i.e. soloq
 function writeQueueData(queueName, user){
@@ -243,38 +32,6 @@ function writeQueueData(queueName, user){
     user.leaguePoints = queueName.leaguePoints;
     user.totalWins = queueName.wins;
     user.totalLosses = queueName.losses;
-}
-
-// Function to pull matches from summoner from API
-async function pullMatchHistory(user, matchListVar, countInit, countFinish){
-    try {
-        queue = document.getElementsByClassName("selected")[0].id;
-        const data = await fetch("https://" + morebasicregion + ".api.riotgames.com/lol/match/v5/matches/by-puuid/" + user.puuid + "/ids?"+"queue="+queue+"&start=" + countInit + "&count=" + countFinish + "&api_key=" + api_key_imp.key);
-        const result_1 = await data.json();
-        for (let i = 0; i < result_1.length; i++) {
-            matchListVar[i] = new match();
-            matchListVar[i].gameId = result_1[i];
-        }
-    } catch (error) {
-        console.log(error);
-        for (let i_1 = 0; i_1 < 3; i_1++) {
-            matchListVar[i_1] = new match();
-            matchListVar[i_1].gameId = matches_twenty[i_1];
-        }
-    }
-}
-
-// Function to pull match data from API for each match
-async function pullIndividualMatch(match){
-    return fetch("https://"+morebasicregion+".api.riotgames.com/lol/match/v5/matches/"+match.gameId+"?api_key="+api_key_imp.key)
-        .then(data=>{return data.json()})
-        .then(result=>{
-              writeIndividualMatch(result, match);
-        })
-        .catch(error=>{
-            console.log(error);
-            writeIndividualMatch(match_template_mapping[match.gameId], match);
-        })
 }
 
 // pulls data from a queried match, adds it to a match variable
@@ -309,7 +66,7 @@ function writeIndividualMatch(queriedMatch, matchVar){
                     new_item.name, new_item.price = itemNameAndPrice(new_item.id); 
                     matchVar.items.push(new_item);
                 }
-              if (summoner_strings.includes(e)){
+              if (SUMMONER_SPELL_STRINGS.includes(e)){
                 matchVar.summoner_spells.push(cur_sum[e]);
               }
             })
@@ -327,78 +84,6 @@ function writeIndividualMatch(queriedMatch, matchVar){
 
     matchVar.queueId = queriedMatch.info.queueId;
     matchVar.fetched = true;
-}
-
-// function to take in a specific match, and update player champion list based on it
-function player_champion_update(current_game, player){
-    var j = player.championsPlayed.findIndex(e => e.name === current_game.championName);
-    if (j > -1) {
-      /* championsPlayed contains the element we're looking for, at index "j" */
-        player.championsPlayed[j].games++;
-        if (current_game.win){
-            player.championsPlayed[j].wins++;
-        }
-        else {
-            player.championsPlayed[j].losses++;
-        }
-    }
-    else {
-        let current_champ = new championPI();
-        current_champ.name = current_game.championName;
-        current_champ.games++;
-        if (current_game.win){
-            current_champ.wins++;
-        }
-        else {
-            current_champ.losses++;
-        }
-        player.championsPlayed.push(current_champ);
-    }
-}
-
-// takes in a match participant, a summoner object, and a team, and fills the team with the summoner
- function populate_team(match_participant, team){
-    cur_player = new match_player();
-
-    // generates list of items for the summoner
-    Object.keys(match_participant).forEach(e => {
-        if (e.startsWith('item') && !e.includes("Purchased") && ! match_participant[e] == 0)
-        {
-            // create new item to add
-            new_item = new item();
-            new_item.id = match_participant[e];
-            new_item.name, new_item.price = itemNameAndPrice(new_item.id); 
-            cur_player.items.push(new_item);
-        }
-    })
-
-    cur_player.position = match_participant.teamPosition;
-    cur_player.champion = match_participant.championName;
-    cur_player.name = match_participant.summonerName;
-    cur_player.kda = match_participant.kills + "/" + match_participant.deaths + "/" + match_participant.assists;
-    cur_player.teamOrder = set_team_order(match_participant.teamPosition);
-    // set team order
-    team.push(cur_player);
-}
-
-// dict for team order numeration
-var team_order = {
-    "TOP": 0,
-    "JUNGLE": 1,
-    "MIDDLE": 2,
-    "BOTTOM": 3,
-    "UTILITY": 4
-}
-
-var match_type = {
-    420 : "RANKED SOLO QUEUE",
-    440 : "RANKED FLEX QUEUE",
-    700 : "CLASH"
-}
-
-// function for determining team order
-function set_team_order(team_pos){
-    return team_order[team_pos];
 }
 
 // takes in a team, generates their container
@@ -433,8 +118,6 @@ function generate_summoner_container(s, team_side){
         summoner_container.style.backgroundColor = "#AD0000";
         summoner_container.classList.add("red_team");
     }
-
-    
 
     var c_ico = document.createElement("img");
     c_ico.src = "https://ddragon.leagueoflegends.com/cdn/12.17.1/img/champion/"+s.champion+".png";
@@ -483,7 +166,7 @@ function generate_item_hover(s){
         var itemImg = document.createElement("img");
         itemImg.src = "https://ddragon.leagueoflegends.com/cdn/12.20.1/img/item/" + s.items[i].id + ".png";
         itemImg.classList.add("item_img");
-        if (wards.includes(s.items[i].id)){
+        if (WARDS.includes(s.items[i].id)){
             itemImg.classList.add("ward_img");
         }
         var tooltip = new bootstrap.Tooltip(itemImg);
@@ -501,17 +184,17 @@ async function search_for_summoner(name){
 
     document.getElementById("summoner_name").value = name;
 
-    readItemsJson();
+    readItemsJson(itemsArray);
     
     eliminateExistingMatches();
     player.name = name;
-    await pullSummonerID(player);
+    await pullSummonerID(region, player);
     while (matchHistory20.length < 20 && index < 20){
         await pullMatchHistory(player, matchHistory20, index, (index + 20));
         index = index + 20;
     }
     
-    await pullPlayerStats(player);
+    await pullPlayerStats(region, player);
     populateSummonerDisplay();
     initializeSummary();
     initializeSticky();
@@ -915,7 +598,7 @@ function itemGeneration(target_match){
         let item_src = document.createElement("img");
         item_src.src = "https://ddragon.leagueoflegends.com/cdn/12.20.1/img/item/" + target_match.items[i].id + ".png";
         item_src.classList.add("item_img");
-        if (wards.includes(target_match.items[i].id)){
+        if (WARDS.includes(target_match.items[i].id)){
             item_src.classList.add("ward_img");
         }
         var tooltip = new bootstrap.Tooltip(item_src);
@@ -932,7 +615,7 @@ function summonerGeneration(target_match){
 
     for (let i = 0; i < target_match.summoner_spells.length; i++){
         let sum_spell = document.createElement("img");
-        sum_spell.src = "https://ddragon.leagueoflegends.com/cdn/12.20.1/img/spell/" + summoner_spell_mapping[target_match.summoner_spells[i]] + ".png";
+        sum_spell.src = "https://ddragon.leagueoflegends.com/cdn/12.20.1/img/spell/" + SUMMONER_SPELL_MAPPING[target_match.summoner_spells[i]] + ".png";
         sum_spell.classList.add("item_img");
         sum_spell.classList.add("summSpell");
         sumCol.append(sum_spell);
@@ -972,4 +655,4 @@ if (new URLSearchParams(window.location.search).get('callFunction').startsWith('
     var params = new URLSearchParams(window.location.search).get('callFunction');
     var playerName = params.substring(params.lastIndexOf(searchSummoner) + 15);
     search_for_summoner(playerName);
-   }
+}
